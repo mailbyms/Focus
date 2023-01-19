@@ -44,7 +44,7 @@
             android:layout_height="88dp"
             android:layout_alignParentLeft="true"
             android:scaleType="centerCrop"
-            android:src="@mipmap/ic_focus_launcher_round" />
+            android:src="@mipmap/ic_launcher_round" />
 
             <TextView
                 android:id="@+id/post_summay"

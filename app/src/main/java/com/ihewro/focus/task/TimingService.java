@@ -169,7 +169,7 @@ public class TimingService extends Service {
         initChannels(getApplicationContext());
         builderProgress = new NotificationCompat.Builder(getApplicationContext(), "focus_pull_data");
         builderProgress.setContentTitle(title);
-        builderProgress.setSmallIcon(R.mipmap.ic_focus_launcher_round);
+        builderProgress.setSmallIcon(R.mipmap.ic_launcher_round);
 //        builderProgress.setTicker("进度条通知");
 
         if (progress > 0){//全部获取完的时候不需要显示进度条了
@@ -199,7 +199,7 @@ public class TimingService extends Service {
         initChannels(getApplicationContext());
         builderProgress = new NotificationCompat.Builder(getApplicationContext(), "focus_pull_data");
         builderProgress.setContentTitle(title);
-        builderProgress.setSmallIcon(R.mipmap.ic_focus_launcher_round);
+        builderProgress.setSmallIcon(R.mipmap.ic_launcher_round);
 //        builderProgress.setTicker("进度条通知");
 
         builderProgress.setContentText(content);

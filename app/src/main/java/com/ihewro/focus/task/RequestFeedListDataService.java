@@ -357,7 +357,7 @@ public class RequestFeedListDataService extends Service {
         initChannels(getApplicationContext());
         builderProgress = new NotificationCompat.Builder(getApplicationContext(), "focus_pull_data");
         builderProgress.setContentTitle(title);
-        builderProgress.setSmallIcon(R.mipmap.ic_focus_launcher_round);
+        builderProgress.setSmallIcon(R.mipmap.ic_launcher_round);
 //        builderProgress.setTicker("进度条通知");
         if (subTitle!=null){
             subTitle.setText(title);
