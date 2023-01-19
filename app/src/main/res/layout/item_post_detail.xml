@@ -22,10 +22,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingLeft="25dp"
-                android:paddingRight="25dp"
-                android:layout_marginTop="35dp"
-                android:layout_marginBottom="25dp">
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
 
                 <TextView
                     android:id="@+id/post_time"
@@ -65,14 +65,14 @@
 
             <WebView
                 android:id="@+id/post_content"
-                android:paddingTop="10dp"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:textIsSelectable="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:isScrollContainer="false"
-                android:text="@string/test_content"/>
+
+                android:text="@string/test_content"
+                android:textIsSelectable="true" />
         </LinearLayout>
 
     </com.ihewro.focus.view.MyScrollView>

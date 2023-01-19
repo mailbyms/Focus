@@ -28,11 +28,11 @@ public class DataUtil {
             return result;
         }
         String parsedStr = Jsoup.parse(originDesc).text();
-        int showLength = parsedStr.length() < 50 ? parsedStr.length() : 50;
+        int showLength = parsedStr.length() < 100 ? parsedStr.length() : 120;
         if (showLength > 0) {
             result = parsedStr.substring(0, showLength - 1);
         }
-        return result;
+        return parsedStr;
     }
 
 
