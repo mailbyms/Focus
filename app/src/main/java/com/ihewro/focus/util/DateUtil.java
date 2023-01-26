@@ -50,7 +50,7 @@ public class DateUtil {
 
 
     public static String getTTimeStringByInt(long time){
-        SimpleDateFormat format =  new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+        SimpleDateFormat format =  new SimpleDateFormat( "HH:mm" );
         return format.format(time);
     }
     public static boolean isTimeout(String now, String last){
