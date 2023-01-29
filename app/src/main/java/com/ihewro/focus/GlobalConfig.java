@@ -27,8 +27,8 @@ public class GlobalConfig {
     public static final String appDirPath = Environment.getExternalStorageDirectory() + "/" + GlobalConfig.storageFolderName + "/";
     public static final String appXMLPath = Environment.getExternalStorageDirectory() + "/" + GlobalConfig.storageFolderName + "/" + "xml/";
 
-    public static final String OfficialRSSHUB = "http://hk.gyjian.eu.org:1200";
-    public static final String MoeratsRsshub = "https://rsshub.rssforever.com";
+    public static final String OfficialRSSHUB = "https://rsshub.rssforever.com";
+    public static final String MoeratsRsshub = "https://mybox.freenetv.com";
     public static final List<String> rssHub = Arrays.asList(OfficialRSSHUB, MoeratsRsshub, UserPreference.OWN_RSSHUB);
     public static final List<String> feedRssHub = Arrays.asList(OfficialRSSHUB, MoeratsRsshub, UserPreference.OWN_RSSHUB,UserPreference.DEFAULT_RSSHUB);
 
