@@ -105,7 +105,8 @@ android {
         abi {
             enable true
             reset()
-            include 'x86', 'armeabi-v7a'
+            // 'x86'是为了在 android studio 虚拟机上运行，'arm64-v8a' 是64位手机。'armeabi-v7a' 是32位手机
+            include 'x86', 'arm64-v8a'
             universalApk true
         }
     }
