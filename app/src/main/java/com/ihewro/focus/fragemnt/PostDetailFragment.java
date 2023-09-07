@@ -117,7 +117,7 @@ public class PostDetailFragment extends Fragment {
         //设置文章内容
         PostUtil.setContent(getContext(), feedItem, postContent,null);
         postTitle.setText(feedItem.getTitle());
-        postTime.setText( DateUtil.getTimeStringByInt(feedItem.getDate()));
+        postTime.setText( DateUtil.getMTimeStringByInt(feedItem.getDate()));
         feedName.setText( feedItem.getFeedName());
 
         if (!feedItem.isRead()) {

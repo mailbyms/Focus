@@ -42,6 +42,11 @@ public class DateUtil {
         return format.format(time);
     }
 
+    public static String getMTimeStringByInt(long time){
+        SimpleDateFormat format =  new SimpleDateFormat( "yyyy-MM-dd HH:mm" );
+        return format.format(time);
+    }
+
     public static String getRFCStringByInt(long time) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy HH:mm:ss");
         return sdf.format(time);

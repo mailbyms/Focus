@@ -2,6 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Focus.iml" filepath="$PROJECT_DIR$/.idea/modules/Focus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Focus.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Focus.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Focus.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Focus.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Focus.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Focus.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Focus.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Focus.app.unitTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/focus.iml" filepath="$PROJECT_DIR$/focus.iml" />
     </modules>

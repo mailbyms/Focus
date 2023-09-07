@@ -115,6 +115,26 @@ android {
         abortOnError false
     }
 
+    android.applicationVariants.all{ variant ->
+        // 获取版本号
+        def versionName = variant.versionName
+
+        // 获取构建类型（Debug/Release）
+        def buildType = variant.buildType.name
+
+        // Modify the APK name
+        variant.outputs.all { output ->
+            // 获取目标机器的架构信息
+            // Extract the ABI information from the output file name
+            def abi = output.getFilter(com.android.build.OutputFile.ABI)
+            // Handle "universal" case
+            if (abi == null || abi.isEmpty()) {
+                abi = "universal"
+            }
+
+            outputFileName = "focus-${versionName}-${buildType}-${abi}.apk"
+        }
+    }
 }
 
 dependencies {
