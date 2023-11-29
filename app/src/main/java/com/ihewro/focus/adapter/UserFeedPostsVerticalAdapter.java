@@ -283,7 +283,7 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
             }
         });
 
-        helper.getView(R.id.operations).setOnClickListener(new View.OnClickListener() {
+        helper.getView(R.id.content_sub2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
