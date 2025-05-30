@@ -30,7 +30,6 @@ import com.ihewro.focus.bean.EventMessage;
 import com.ihewro.focus.bean.FeedItem;
 import com.ihewro.focus.bean.PostSetting;
 import com.ihewro.focus.bean.UserPreference;
-import com.ihewro.focus.callback.UICallback;
 import com.ihewro.focus.helper.ParallaxTransformer;
 import com.ihewro.focus.util.Constants;
 import com.ihewro.focus.util.ShareUtil;
@@ -39,7 +38,6 @@ import com.ihewro.focus.util.UIUtil;
 import com.ihewro.focus.util.WebViewUtil;
 
 import org.greenrobot.eventbus.EventBus;
-import org.litepal.crud.callback.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,10 +67,6 @@ public class PostDetailActivity extends BackActivity {
 
 
     private boolean currentItemReady = false;
-    private boolean starItemReady = false;
-    private boolean starIconReady = false;
-
-
     private List<View> viewList = new ArrayList<>();
     private List<Integer> readList = new ArrayList<>();
 
@@ -88,7 +82,6 @@ public class PostDetailActivity extends BackActivity {
 
     private int mIndex;
     private FeedItem currentFeedItem;
-    private MenuItem starItem;
 
     private int origin;
 
@@ -171,7 +164,6 @@ public class PostDetailActivity extends BackActivity {
     }
 
     private void initRecyclerView() {
-
         adapter = new PostDetailListPagerAdapter(getSupportFragmentManager(),PostDetailActivity.this);
 
         //初始化当前文章的对象
@@ -192,7 +184,6 @@ public class PostDetailActivity extends BackActivity {
 
                 adapter.setData(feedItemList);
 
-
                 UIUtil.runOnUiThread(PostDetailActivity.this, new Runnable() {
                     @Override
                     public void run() {
@@ -206,42 +197,32 @@ public class PostDetailActivity extends BackActivity {
                         //移动到当前文章的位置
                         viewPager.setCurrentItem(mIndex);
 
-
                         ALog.d("首次加载");
-                        setLikeButton();
                         initPostClickListener();
 
                         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                             @Override
                             public void onPageScrolled(int i, float v, int i1) {
-
                             }
 
                             @Override
                             public void onPageSelected(int i) {
                                 ALog.d("onPageSelected");
                                 mIndex = i;
-                                //UI修改
-                                starIconReady = false;
                                 initData();
-                                setLikeButton();
                                 initPostClickListener();
                             }
 
                             @Override
                             public void onPageScrollStateChanged(int i) {
-
                             }
                         });
-
-
 
                         if (notReadNum <= 0) {
                             toolbar.setTitle("");
                         } else {
                             toolbar.setTitle(notReadNum + "");
                         }
-
                     }
                 });
             }
@@ -267,13 +248,7 @@ public class PostDetailActivity extends BackActivity {
             getMenuInflater().inflate(R.menu.post, menu);
         }
 
-        starItem = menu.findItem(R.id.action_star);
-        this. starItemReady = true;
-
-        setLikeButton();
         initToolbarColor();
-
-
         return true;
     }
 
@@ -293,7 +268,6 @@ public class PostDetailActivity extends BackActivity {
             case R.id.action_share://分享
                 ShareUtil.shareBySystem(PostDetailActivity.this, "text", currentFeedItem.getTitle() + "\n" + currentFeedItem.getUrl());
                 break;
-
             case R.id.text_setting:
                 ReadSettingDialog = new MaterialDialog.Builder(this)
                         .customView(R.layout.read_setting, true)
@@ -306,63 +280,21 @@ public class PostDetailActivity extends BackActivity {
                                 UserPreference.updateOrSaveValueByKey(PostSetting.FONT_SIZE, PostSetting.FONT_SIZE_DEFAULT);
                                 UserPreference.updateOrSaveValueByKey(PostSetting.FONT_SPACING, PostSetting.FONT_SPACING_DEFAULT);
                                 UserPreference.updateOrSaveValueByKey(PostSetting.LINE_SPACING, PostSetting.LINE_SPACING_DEFAULT);
-//                                adapter.notifyItemChanged(mIndex);
                             }
                         })
                         .show();
 
                 initReadSettingView();
                 initReadSettingListener();
-
-
                 initReadBackgroundView();
-
                 break;
-
-            case R.id.action_star:
-
-                clickStarButton();
-
-                break;
-
             case android.R.id.home:
                 finish();
                 break;
-
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-
-    private void clickStarButton() {
-
-        FeedItem.clickWhenNotFavorite(PostDetailActivity.this, currentFeedItem, new UICallback() {
-            @Override
-            public void doUIWithFlag(boolean flag) {
-                currentFeedItem.setFavorite(flag);
-                if (flag) {//收藏了
-                    Toasty.success(PostDetailActivity.this, "收藏成功").show();
-                } else {
-                    Toasty.success(PostDetailActivity.this, "取消收藏成功").show();
-                }
-
-                setLikeButton();
-
-                currentFeedItem.saveAsync().listen(new SaveCallback() {
-                    @Override
-                    public void onFinish(boolean success) {
-                        if (origin == ORIGIN_SEARCH) {
-                            EventBus.getDefault().post(new EventMessage(EventMessage.MAKE_STAR_STATUS_BY_ID, currentFeedItem.getId(), currentFeedItem.isFavorite()));
-                        } else if (origin == ORIGIN_MAIN) {
-                            EventBus.getDefault().post(new EventMessage(EventMessage.MAKE_STAR_STATUS_BY_INDEX, mIndex, currentFeedItem.isFavorite()));
-                        }
-                    }
-                });
-
-            }
-        });
-    }
 
     private void initReadBackgroundView() {
         if (ReadSettingDialog.isShowing()) {
@@ -483,32 +415,6 @@ public class PostDetailActivity extends BackActivity {
 
                 }
             });
-        }
-    }
-
-
-    /**
-     * 显示自定义的收藏的图标
-     */
-    private void showStarActionView(MenuItem item) {
-        starItem = item;
-    }
-
-    private void setLikeButton() {
-        //设置收藏状态
-        if (currentItemReady && starItemReady && !starIconReady && starItem!=null && currentFeedItem!=null){
-            ALog.d("设置收藏状态");
-            if (currentFeedItem.isFavorite()) {
-                starItem.setIcon(R.drawable.star_on);
-            } else {
-                if (SkinPreference.getInstance().getSkinName().equals("night")) {
-                    starItem.setIcon(R.drawable.star_off_night);
-                } else {
-                    starItem.setIcon(R.drawable.star_off);
-                }
-            }
-
-            starIconReady = true;
         }
     }
 
