@@ -36,13 +36,10 @@ function touchImage(btn) {
             imageUrl = btn.getAttribute("data");
         }else{
             imageUrl = btn.src;
-
         }
-
 
         //打开图片弹窗
         window.imagelistener.longClickImage(imageUrl);
-
     }
 }
 
