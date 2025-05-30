@@ -262,6 +262,21 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
         helper.getView(R.id.content_container).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // 如果文章未读，立即设置为已读状态
+                if (!item.isRead()) {
+                    item.setRead(true);
+                    item.saveAsync().listen(new SaveCallback() {
+                        @Override
+                        public void onFinish(boolean success) {
+                            if (success) {
+                                notifyItemChanged(helper.getAdapterPosition());
+                                //修改首页未读数目相关界面
+                                EventBus.getDefault().post(new EventMessage(EventMessage.MAIN_READ_NUM_EDIT));
+                            }
+                        }
+                    });
+                }
+                
                 ArrayList<Integer> list = new ArrayList<>();
                 for (FeedItem feedItem: feedItemList){
                     list.add(feedItem.getId());
