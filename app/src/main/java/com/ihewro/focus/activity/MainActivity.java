@@ -53,7 +53,6 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.holder.BadgeStyle;
 import com.mikepenz.materialdrawer.model.ExpandableBadgeDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
@@ -542,9 +541,6 @@ public class MainActivity extends BaseActivity {
                 case SHOW_ALL:
                     clickAndUpdateMainFragmentData(new ArrayList<String>(), "全部文章",drawerItem.getIdentifier());
                     break;
-                case SHOW_STAR:
-                    StarActivity.activityStart(MainActivity.this);
-                    break;
                 case DRAWER_FOLDER_ITEM:
                     ArrayList<String> list = new ArrayList<>();
                     list.add(String.valueOf(drawerItem.getIdentifier()));
@@ -616,7 +612,6 @@ public class MainActivity extends BaseActivity {
 
         AllDrawerItem = new SecondaryDrawerItem().withName("全部").withIcon(GoogleMaterial.Icon.gmd_home).withSelectable(true).withTag(SHOW_ALL);
         subItems.add(AllDrawerItem);
-        subItems.add(new SecondaryDrawerItem().withName("收藏").withIcon(GoogleMaterial.Icon.gmd_star).withSelectable(false).withTag(SHOW_STAR));
         subItems.add(new SectionDrawerItem().withName("订阅源").withDivider(false));
 
 
