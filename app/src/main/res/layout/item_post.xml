@@ -85,6 +85,7 @@
                 android:layout_alignParentRight="true"
                 android:drawablePadding="2dp"
                 android:gravity="center"
+                android:layout_marginRight="10dp"
                 android:text="人民一学的bilibili动态" />
 
             <ImageView
