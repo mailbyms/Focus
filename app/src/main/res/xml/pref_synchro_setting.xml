@@ -21,18 +21,6 @@
         android:title="@string/pref_title_use_internet_while_open"
         android:summary="@string/pref_summary_lower_flow_mode"/>
 
-    <android.support.v7.preference.Preference
-        app:iconSpaceReserved="false"
-        android:key="@string/pref_key_rsshub_choice"
-        android:title="@string/pref_title_rsshub_choice"
-        android:summary="@string/pref_summary_rsshub_choice"/>
-
-    <android.support.v7.preference.Preference
-        app:iconSpaceReserved="false"
-        android:key="@string/pref_key_own_rsshub"
-        android:title="@string/pref_title_own_rsshub"
-        android:summary="@string/pref_summary_own_rsshub"/>
-
     <android.support.v7.preference.SwitchPreferenceCompat
         android:key="@string/pref_key_auto_name"
         android:title="@string/pref_title_auto_name"

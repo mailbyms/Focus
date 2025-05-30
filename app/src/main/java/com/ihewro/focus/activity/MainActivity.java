@@ -817,34 +817,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.action_filter:
-
                 drawerPopupView.toggle();
-                break;
-
-            case R.id.action_rsshub:
-                //显示弹窗
-                //之前选择的位置
-                final int select = GlobalConfig.rssHub.indexOf(UserPreference.queryValueByKey(UserPreference.RSS_HUB,GlobalConfig.OfficialRSSHUB));
-                ALog.d(UserPreference.getRssHubUrl());
-                List<String> list = GlobalConfig.rssHub;
-                new MaterialDialog.Builder(this)
-                        .title("rsshub源选择")
-                        .items(list)
-                        .itemsCallbackSingleChoice(select, new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                if (which>=0 && which<3){
-                                    UserPreference.updateOrSaveValueByKey(UserPreference.RSS_HUB,GlobalConfig.rssHub.get(which));
-                                    return true;
-                                }
-                                return false;
-                            }
-                        })
-                        .positiveText("选择")
-                        .show();
                 break;
         }
         return true;
