@@ -459,6 +459,9 @@ public class MainActivity extends BaseActivity {
         drawer.getStickyFooter().findViewById(R.id.mode).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // 先停止服务
+                stopService(new Intent(MainActivity.this, TimingService.class));
+                
                 if (!finalFlag) {//flag true 表示夜间模式
                     SkinCompatManager.getInstance().loadSkin("night", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
                     new Handler().postDelayed(new Runnable() {
@@ -466,7 +469,7 @@ public class MainActivity extends BaseActivity {
                         public void run() {
                             recreate();
                         }
-                    }, 200); // 延时1秒
+                    }, 200);
                 } else {
                     SkinCompatManager.getInstance().restoreDefaultTheme();
                     new Handler().postDelayed(new Runnable() {
@@ -474,7 +477,7 @@ public class MainActivity extends BaseActivity {
                         public void run() {
                             recreate();
                         }
-                    }, 200); // 延时1秒
+                    }, 200);
                 }
             }
         });
