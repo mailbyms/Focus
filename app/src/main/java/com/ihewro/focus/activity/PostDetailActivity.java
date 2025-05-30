@@ -213,7 +213,6 @@ public class PostDetailActivity extends BackActivity {
 
                         ALog.d("首次加载");
                         setLikeButton();
-                        setCurrentItemStatus();
                         initPostClickListener();
 
                         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -230,8 +229,6 @@ public class PostDetailActivity extends BackActivity {
                                 starIconReady = false;
                                 initData();
                                 setLikeButton();
-                                //修改顶部导航栏的收藏状态
-                                setCurrentItemStatus();
                                 initPostClickListener();
                             }
 
@@ -259,88 +256,9 @@ public class PostDetailActivity extends BackActivity {
     /**
      * 为什么不在adapter里面写，因为recyclerview有缓存机制，没滑到这个时候就给标记为已读了
      */
-    private void setCurrentItemStatus() {
-        //将该文章标记为已读，并且通知首页修改布局
-        if (!currentFeedItem.isRead()) {
-            currentFeedItem.setRead(true);
-            updateNotReadNum();
-            currentFeedItem.saveAsync().listen(new SaveCallback() {
-                @Override
-                public void onFinish(boolean success) {
-                    if (origin == ORIGIN_SEARCH) {//isUpdateMainReadMark 为false表示不是首页进来的
-                        readList.add(currentFeedItem.getId());
-                    } else if (origin == ORIGIN_MAIN) {
-                        readList.add(mIndex);
-                    }
-                }
-            });
-        }
-
-
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private void initPostClickListener() {
-
-        //文章双击收藏事件
-        final GestureDetector gestureDetector = new GestureDetector(PostDetailActivity.this, new GestureDetector.SimpleOnGestureListener() {
-
-            @Override
-            public boolean onDoubleTap(final MotionEvent e) {//双击事件
-                ALog.d("双击");
-
-                clickStarButton();
-
-                return true;
-            }
-        });
-
-
-        //双击顶栏回顶部事件
-        final GestureDetector gestureDetector1 = new GestureDetector(PostDetailActivity.this, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                NestedScrollView scrollView = (NestedScrollView) adapter.getViewByPosition(mIndex, R.id.post_turn);
-                if (scrollView!=null){
-                    scrollView.fullScroll(View.FOCUS_UP);
-                }
-                return super.onDoubleTap(e);
-            }
-        });
-
-
-        if (UserPreference.queryValueByKey(UserPreference.notToTop, "0").equals("0")) {
-            toolbar.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    return gestureDetector1.onTouchEvent(motionEvent);
-                }
-            });
-        }
-
-
-        if (UserPreference.queryValueByKey(UserPreference.notStar, "0").equals("0")) {
-            //第一篇文章进入的时候这个view为null，我也不知道为什么！
-            new Handler().postDelayed(new Runnable() {//做一个延迟绑定
-                @Override
-                public void run() {
-
-                    View content = adapter.getViewByPosition(mIndex, R.id.post_content);
-                    if (content != null) {
-                        content.setOnTouchListener(new View.OnTouchListener() {
-                            @Override
-                            public boolean onTouch(View v, MotionEvent event) {
-//                                ALog.d("什么情况？？双击事件");
-
-                                return gestureDetector.onTouchEvent(event);
-                            }
-                        });
-                    }
-                }
-            }, 500);
-
-
-        }
+        // 删除所有手势相关代码
     }
 
 

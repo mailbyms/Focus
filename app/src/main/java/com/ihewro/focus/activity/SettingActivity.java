@@ -13,7 +13,6 @@ import com.ihewro.focus.R;
 import com.ihewro.focus.adapter.BaseViewPagerAdapter;
 import com.ihewro.focus.fragemnt.setting.DataFragment;
 import com.ihewro.focus.fragemnt.setting.DisplayFragment;
-import com.ihewro.focus.fragemnt.setting.GestureFragment;
 import com.ihewro.focus.fragemnt.setting.SynchroFragment;
 
 import java.util.ArrayList;
@@ -36,7 +35,6 @@ public class SettingActivity extends BackActivity {
     private List<Fragment> fragmentList = new ArrayList<>();
 
     private SynchroFragment synchroFragment;
-    private GestureFragment gestureFragment;
     private DataFragment dataFragment;
     private DisplayFragment displayFragment;
 
@@ -61,19 +59,16 @@ public class SettingActivity extends BackActivity {
         //碎片列表
         fragmentList.clear();
         synchroFragment = new SynchroFragment();
-        gestureFragment = new GestureFragment();
         displayFragment = new DisplayFragment();
         dataFragment = new DataFragment();
 
         fragmentList.add(synchroFragment);
-        fragmentList.add(gestureFragment);
         fragmentList.add(displayFragment);
         fragmentList.add(dataFragment);
 
         //标题列表
         List<String> pageTitleList = new ArrayList<>();
         pageTitleList.add("同步");
-        pageTitleList.add("手势");
         pageTitleList.add("显示");
         pageTitleList.add("数据");
 

@@ -87,7 +87,6 @@ public class PostDetailListAdapter extends BaseQuickAdapter<FeedItem, BaseViewHo
 
 
     private void initListener(final FeedItem currentFeedItem){
-
         refreshLayout.setRefreshHeader(new PostHeader(context, currentFeedItem));
         refreshLayout.setRefreshFooter(new PostFooter(context, currentFeedItem));
         //使上拉加载具有弹性效果
@@ -100,19 +99,7 @@ public class PostDetailListAdapter extends BaseQuickAdapter<FeedItem, BaseViewHo
         refreshLayout.setEnableAutoLoadMore(false);
 
         refreshLayout.setEnableRefresh(false);//禁止下拉动作
-
-        if (UserPreference.queryValueByKey(UserPreference.notOpenClick,"0").equals("0")){
-            refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-                @Override
-                public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                    refreshLayout.finishLoadMore();
-                    //打开外链
-                    openLink(currentFeedItem);
-                }
-            });
-        }else {
-            refreshLayout.setEnableLoadMore(false);
-        }
+        refreshLayout.setEnableLoadMore(false);//禁止上拉动作
     }
 
     private void openLink(FeedItem feedItem) {

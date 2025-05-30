@@ -131,7 +131,6 @@ public class PostDetailFragment extends Fragment {
 
 
     private void initListener(){
-
         refreshLayout.setRefreshHeader(new PostHeader(getContext(), feedItem));
         refreshLayout.setRefreshFooter(new PostFooter(getContext(), feedItem));
         //使上拉加载具有弹性效果
@@ -144,19 +143,7 @@ public class PostDetailFragment extends Fragment {
         refreshLayout.setEnableAutoLoadMore(false);
 
         refreshLayout.setEnableRefresh(false);//禁止下拉动作
-
-        if (UserPreference.queryValueByKey(UserPreference.notOpenClick,"0").equals("0")){
-            refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-                @Override
-                public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                    refreshLayout.finishLoadMore();
-                    //打开外链
-                    openLink();
-                }
-            });
-        }else {
-            refreshLayout.setEnableLoadMore(false);
-        }
+        refreshLayout.setEnableLoadMore(false);//禁止上拉动作
     }
 
     private void openLink() {

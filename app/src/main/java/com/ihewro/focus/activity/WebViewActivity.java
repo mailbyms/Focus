@@ -201,27 +201,7 @@ public class WebViewActivity extends BackActivity {
 //        webView.loadUrl(url);
 //        webView.loadData();
 
-
-
-
-        //双击顶栏回顶部事件
-        final GestureDetector gestureDetector1 = new GestureDetector(this,new GestureDetector.SimpleOnGestureListener(){
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                mAgentWeb.getWebCreator().getWebView().scrollTo(0,0);
-                return super.onDoubleTap(e);
-            }
-        });
-
-
-        toolbar.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return gestureDetector1.onTouchEvent(motionEvent);
-            }
-        });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
