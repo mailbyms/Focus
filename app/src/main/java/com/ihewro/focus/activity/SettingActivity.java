@@ -14,7 +14,6 @@ import com.ihewro.focus.adapter.BaseViewPagerAdapter;
 import com.ihewro.focus.fragemnt.setting.DataFragment;
 import com.ihewro.focus.fragemnt.setting.DisplayFragment;
 import com.ihewro.focus.fragemnt.setting.GestureFragment;
-import com.ihewro.focus.fragemnt.setting.OtherFragment;
 import com.ihewro.focus.fragemnt.setting.SynchroFragment;
 
 import java.util.ArrayList;
@@ -40,8 +39,6 @@ public class SettingActivity extends BackActivity {
     private GestureFragment gestureFragment;
     private DataFragment dataFragment;
     private DisplayFragment displayFragment;
-    private OtherFragment otherFragment;
-
 
     public static void activityStart(Activity activity) {
         Intent intent = new Intent(activity, SettingActivity.class);
@@ -58,7 +55,6 @@ public class SettingActivity extends BackActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         createTabLayout();
-
     }
 
     private void createTabLayout() {
@@ -68,13 +64,11 @@ public class SettingActivity extends BackActivity {
         gestureFragment = new GestureFragment();
         displayFragment = new DisplayFragment();
         dataFragment = new DataFragment();
-        otherFragment = new OtherFragment();
 
         fragmentList.add(synchroFragment);
         fragmentList.add(gestureFragment);
         fragmentList.add(displayFragment);
         fragmentList.add(dataFragment);
-        fragmentList.add(otherFragment);
 
         //标题列表
         List<String> pageTitleList = new ArrayList<>();
@@ -82,11 +76,9 @@ public class SettingActivity extends BackActivity {
         pageTitleList.add("手势");
         pageTitleList.add("显示");
         pageTitleList.add("数据");
-        pageTitleList.add("其他");
 
         //新建适配器
         BaseViewPagerAdapter adapter = new BaseViewPagerAdapter(getSupportFragmentManager(), fragmentList, pageTitleList);
-
 
         //适配夜间模式
         if (SkinPreference.getInstance().getSkinName().equals("night")) {
@@ -100,8 +92,5 @@ public class SettingActivity extends BackActivity {
         viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
-
     }
-
-
 }
