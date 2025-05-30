@@ -591,4 +591,13 @@ public class UserFeedUpdateContentFragment extends Fragment {
         }
         return this.feedItemNum;
     }
+
+    /**
+     * 触发刷新
+     */
+    public void triggerRefresh() {
+        if (refreshLayout != null) {
+            refreshLayout.autoRefresh();
+        }
+    }
 }

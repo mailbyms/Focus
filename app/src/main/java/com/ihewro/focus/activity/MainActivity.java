@@ -741,6 +741,12 @@ public class MainActivity extends BaseActivity {
             case R.id.action_filter:
                 drawerPopupView.toggle();
                 break;
+            case R.id.action_search:
+                // 触发下拉刷新
+                if (feedPostsFragment != null) {
+                    feedPostsFragment.triggerRefresh();
+                }
+                break;
         }
         return true;
     }
