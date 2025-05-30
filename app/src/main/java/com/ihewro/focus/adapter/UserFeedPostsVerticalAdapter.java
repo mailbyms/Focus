@@ -262,19 +262,15 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
         helper.getView(R.id.content_container).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (UserPreference.queryValueByKey(UserPreference.FIRST_INTRO_MAIN_FEED_ITEM, "0").equals("0")){
-                    initTapView(helper.getView(R.id.operations));
+                ArrayList<Integer> list = new ArrayList<>();
+                for (FeedItem feedItem: feedItemList){
+                    list.add(feedItem.getId());
+                }
+                //如果当前正在请求数据，则来源变成ORIGIN_SEARCH，否则使用ORIGIN_MAIN，用于更新首页已读样式不同
+                if (isRequesting){
+                    PostDetailActivity.activityStart(activity,helper.getAdapterPosition(),feedItemList,PostDetailActivity.ORIGIN_SEARCH);
                 }else {
-                    ArrayList<Integer> list = new ArrayList<>();
-                    for (FeedItem feedItem: feedItemList){
-                        list.add(feedItem.getId());
-                    }
-                    //如果当前正在请求数据，则来源变成ORIGIN_SEARCH，否则使用ORIGIN_MAIN，用于更新首页已读样式不同
-                    if (isRequesting){
-                        PostDetailActivity.activityStart(activity,helper.getAdapterPosition(),feedItemList,PostDetailActivity.ORIGIN_SEARCH);
-                    }else {
-                        PostDetailActivity.activityStart(activity,helper.getAdapterPosition(),feedItemList,PostDetailActivity.ORIGIN_MAIN);
-                    }
+                    PostDetailActivity.activityStart(activity,helper.getAdapterPosition(),feedItemList,PostDetailActivity.ORIGIN_MAIN);
                 }
             }
         });
@@ -282,7 +278,6 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
         helper.getView(R.id.content_sub2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String[] list = new String[]{"将以上部分标记为已读","将当前文章标记已（未）读", "将以下部分标记为已读"};
 
                 if (item.isRead()){
@@ -291,31 +286,27 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
                     list[1] = "将当前文章标记已读";
                 }
                 new XPopup.Builder(activity)
-                        .atView(helper.getView(R.id.operations))  // 依附于所点击的View，内部会自动判断在上方或者下方显示
-                        .hasShadowBg(false)
-                        .asAttachList(list,
-                                new int[]{},
-                                new OnSelectListener() {
-                                    @Override
-                                    public void onSelect(int position, String text) {
-                                        if (position == 0){
-                                            markReadOfTop(helper,item);
-                                        }else if (position == 2){
-                                            markReadOfBottom(helper,item);
-                                        }else if (position == 1){
-                                            //当前项目标记已读/未读
-                                            item.setRead(!item.isRead());
-                                            item.saveAsync().listen(new SaveCallback() {
-                                                @Override
-                                                public void onFinish(boolean success) {
-                                                    notifyItemChanged(helper.getAdapterPosition());
-                                                    //修改首页未读数目相关界面
-                                                    EventBus.getDefault().post(new EventMessage(EventMessage.MAIN_READ_NUM_EDIT));
-                                                }
-                                            });
+                        .asCenterList("操作", list, new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                if (position == 0){
+                                    markReadOfTop(helper,item);
+                                }else if (position == 2){
+                                    markReadOfBottom(helper,item);
+                                }else if (position == 1){
+                                    //当前项目标记已读/未读
+                                    item.setRead(!item.isRead());
+                                    item.saveAsync().listen(new SaveCallback() {
+                                        @Override
+                                        public void onFinish(boolean success) {
+                                            notifyItemChanged(helper.getAdapterPosition());
+                                            //修改首页未读数目相关界面
+                                            EventBus.getDefault().post(new EventMessage(EventMessage.MAIN_READ_NUM_EDIT));
                                         }
-                                    }
-                                })
+                                    });
+                                }
+                            }
+                        })
                         .show();
             }
         });
@@ -338,25 +329,6 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
         }
     }
 
-    private void initTapView(View view){
-        TapTargetView.showFor(activity,                 // `this` is an Activity
-                TapTarget.forView(view, "触发新手教程！", "先别急的进入！点击该图标也可以快速标记已读哦，文章左滑也可以快速标记已读哦！\n")
-                        .cancelable(false)
-                        .drawShadow(true)
-                        .titleTextColor(R.color.colorAccent)
-                        .descriptionTextColor(R.color.text_secondary_dark)
-                        .tintTarget(true)
-                        .targetCircleColor(android.R.color.black),
-                new TapTargetView.Listener() {          // The listener can listen for regular clicks, long clicks or cancels
-                    @Override
-                    public void onTargetClick(TapTargetView view) {
-                        super.onTargetClick(view);      // This call is optional
-                        UserPreference.updateOrSaveValueByKey(UserPreference.FIRST_INTRO_MAIN_FEED_ITEM,"1");
-                    }
-                });
-    }
-
-
     public void setRequesting(boolean requesting) {
         isRequesting = requesting;
     }
@@ -364,7 +336,6 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
         ALog.d("fromPosition" + fromPosition + "toPosition" + toPosition);
-
     }
 
     @Override

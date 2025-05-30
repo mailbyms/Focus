@@ -179,8 +179,6 @@ public class MainActivity extends BaseActivity {
 
         initListener();
 
-        initTapView();
-
         createTabLayout();
 
         String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -205,70 +203,11 @@ public class MainActivity extends BaseActivity {
         TimingService.startService(this,false);
     }
 
-
-    /**
-     * 新手教程，第一次打开app，会自动弹出教程
-     */
-    private void initTapView() {
-        if (UserPreference.queryValueByKey(UserPreference.FIRST_USE_LOCAL_SEARCH_AND_FILTER, "0").equals("0")) {
-            if (LitePal.count(FeedItem.class) > 0) {
-                new TapTargetSequence(this)
-                        .targets(TapTarget.forToolbarMenuItem(toolbar, R.id.action_search, "搜索", "在这里，搜索本地内容的一切。")
-                                        .cancelable(false)
-                                        .drawShadow(true)
-                                        .titleTextColor(R.color.colorAccent)
-                                        .descriptionTextColor(R.color.text_secondary_dark)
-                                        .tintTarget(true)
-                                        .targetCircleColor(android.R.color.black)//内圈的颜色
-                                        .id(1),
-
-                                TapTarget.forToolbarMenuItem(toolbar, R.id.action_filter, "过滤设置", "开始按照你想要的方式显示内容吧！")
-                                        .cancelable(false)
-                                        .drawShadow(true)
-                                        .titleTextColor(R.color.colorAccent)
-                                        .descriptionTextColor(R.color.text_secondary_dark)
-                                        .tintTarget(true)
-                                        .targetCircleColor(android.R.color.black)//内圈的颜色
-                                        .id(2))
-                        .listener(new TapTargetSequence.Listener() {
-                            @Override
-                            public void onSequenceFinish() {
-                                //设置该功能已经使用过了
-                                UserPreference.updateOrSaveValueByKey(UserPreference.FIRST_USE_LOCAL_SEARCH_AND_FILTER, "1");
-                            }
-
-                            @Override
-                            public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
-                                switch (lastTarget.id()) {
-                                    case 1:
-                                        break;
-                                    case 2:
-                                        drawerPopupView.toggle();
-                                        break;
-                                }
-                            }
-
-                            @Override
-                            public void onSequenceCanceled(TapTarget lastTarget) {
-                                // Boo
-                            }
-                        }).start();
-            }
-
-        }
-
-
-    }
-
-
     @SuppressLint("ClickableViewAccessibility")
     private void initListener() {
-
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //Do some magic
-//                searchViewContent.setVisibility(View.GONE);
                 if (!query.equals("")) {
                     updateTabLayout(query);
                 }
@@ -277,16 +216,12 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //Do some magic
-                //开始同步搜索
                 if (!newText.equals("")) {
                     updateTabLayout(newText);
                 }
                 return true;
             }
-
         });
-
 
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
@@ -300,14 +235,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-
-        /*playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ALog.d("单击");
-                toggleFeedListPopupView();
-            }
-        });*/
         playButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -334,44 +261,26 @@ public class MainActivity extends BaseActivity {
                         });
                     }
                 }).start();
-
-
                 return true;
             }
         });
 
         final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-
             @Override
             public boolean onDoubleTap(MotionEvent e) {//双击事件
                 //回顶部
                 ALog.d("双击");
                 EventBus.getDefault().post(new EventMessage(EventMessage.GO_TO_LIST_TOP));
-
                 return true;
             }
 
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-
                 ALog.d("单击");
                 toggleFeedListPopupView();
                 return true;
             }
-
-
-            /*   @Override
-            public void onLongPress(MotionEvent e) {
-                //显示当前列表的的信息
-                super.onLongPress(e);
-                new MaterialDialog.Builder(MainActivity.this)
-                        .title(toolbarTitle.getText())
-                        .content("全部数目" + feedPostsFragment.getFeedItemNum() + "\n" + "未读数目" + feedPostsFragment.getNotReadNum())
-                        .show();
-
-            }*/
         });
-
 
         playButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -379,7 +288,6 @@ public class MainActivity extends BaseActivity {
                 return gestureDetector.onTouchEvent(event);
             }
         });
-
     }
 
     private void createTabLayout() {
@@ -413,7 +321,6 @@ public class MainActivity extends BaseActivity {
         } else {
             tabLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.colorPrimary));
         }
-
     }
 
     private void updateTabLayout(final String text) {
@@ -449,7 +356,6 @@ public class MainActivity extends BaseActivity {
         }).start();
     }
 
-
     /**
      * 全文搜索🔍
      *
@@ -467,7 +373,7 @@ public class MainActivity extends BaseActivity {
     public void queryFeedByText(String text) {
         List<Feed> searchResults;
         text = "%" + text + "%";
-        searchResults = LitePal.where("name like ? or desc like ? or url like ?", text, text, text).find(Feed.class);
+        searchResults = LitePal.where("name like ? or desc like ?", text, text).find(Feed.class);
         searchLocalFeedListFragment.updateData(searchResults);
     }
 
