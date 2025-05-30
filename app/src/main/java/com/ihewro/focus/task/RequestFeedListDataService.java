@@ -250,13 +250,15 @@ public class RequestFeedListDataService extends Service {
             //子线程
             //进行数据处理
             //合并旧数据没必要合并数据，请求数据的时候都已经保存到本地数据库了。
+            List<FeedItem> list = new ArrayList<>();
             for (int i = 0; i < num.get();i++){
                 Feed temp = feedList.get(i);
                 String url = temp.getUrl();
-                getFeedItems(url);
+                List<FeedItem> feedItems = getFeedItems(url);
+                if (feedItems != null) {
+                    list.addAll(feedItems);
+                }
             }
-//                    ALog.d("开始对数据排序");
-            final List<FeedItem> list = new ArrayList<>(eList);
 
             orderChoice = UserPreference.queryValueByKey(UserPreference.ODER_CHOICE,FilterPopupView.ORDER_BY_NEW);
             filterChoice = UserPreference.queryValueByKey(UserPreference.FILTER_CHOICE,FilterPopupView.SHOW_ALL);
@@ -318,23 +320,22 @@ public class RequestFeedListDataService extends Service {
             });
         }
 
-        private void getFeedItems(String url){
+        private List<FeedItem> getFeedItems(String url){
             //将本地数据库的内容合并到列表中
             //找到当前feed url 本地数据库的内容
             List<Feed> tempList = LitePal.where("url = ?" ,url).find(Feed.class);
             if (tempList.size()>0){
                 Feed temp = tempList.get(0);
-//                ALog.d(temp);
                 List<FeedItem> tempFeedItemList = LitePal.where("feedid = ?", String.valueOf(temp.getId())).find(FeedItem.class);
-//                ALog.d("本地数据库信息url" + url + "订阅名称为"+ temp.getName() + "文章数目" + tempFeedItemList.size());
 
                 //设置badguy
                 for (int i = 0;i<tempFeedItemList.size();i++){
                     tempFeedItemList.get(i).setBadGuy(temp.isBadGuy());
                     tempFeedItemList.get(i).setChina(temp.isChina());
                 }
-                eList.addAll(tempFeedItemList);
+                return tempFeedItemList;
             }
+            return null;
         }
 
         public void stopService(){
