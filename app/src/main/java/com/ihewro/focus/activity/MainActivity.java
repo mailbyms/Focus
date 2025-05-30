@@ -10,9 +10,6 @@ import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.ButtonBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -27,17 +24,13 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.ALog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.ihewro.focus.GlobalConfig;
 import com.ihewro.focus.R;
-import com.ihewro.focus.adapter.BaseViewPagerAdapter;
 import com.ihewro.focus.bean.EventMessage;
 import com.ihewro.focus.bean.Feed;
 import com.ihewro.focus.bean.FeedFolder;
 import com.ihewro.focus.bean.FeedItem;
 import com.ihewro.focus.bean.Help;
-import com.ihewro.focus.bean.UserPreference;
 import com.ihewro.focus.fragemnt.UserFeedUpdateContentFragment;
 import com.ihewro.focus.fragemnt.search.SearchFeedFolderFragment;
 import com.ihewro.focus.fragemnt.search.SearchFeedItemListFragment;
@@ -90,7 +83,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.search_view)
     MaterialSearchView searchView;
     @BindView(R.id.playButton)
-    ButtonBarLayout playButton;
+    LinearLayout playButton;
     @BindView(R.id.fl_main_body)
     FrameLayout flMainBody;
     @BindView(R.id.toolbar_title)
@@ -110,10 +103,6 @@ public class MainActivity extends BaseActivity {
     private static final int FEED_FOLDER_IDENTIFY_PLUS = 9999;
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
-    @BindView(R.id.viewPager)
-    ViewPager viewPager;
-    @BindView(R.id.search_view_content)
-    LinearLayout searchViewContent;
     @BindView(R.id.subtitle)
     TextView subtitle;
     public static final int RQUEST_STORAGE_READ = 8;
@@ -179,8 +168,6 @@ public class MainActivity extends BaseActivity {
 
         initListener();
 
-        createTabLayout();
-
         String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         if (!EasyPermissions.hasPermissions(this, perms)) {
@@ -205,36 +192,6 @@ public class MainActivity extends BaseActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void initListener() {
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (!query.equals("")) {
-                    updateTabLayout(query);
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (!newText.equals("")) {
-                    updateTabLayout(newText);
-                }
-                return true;
-            }
-        });
-
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown() {
-                searchViewContent.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onSearchViewClosed() {
-                searchViewContent.setVisibility(View.GONE);
-            }
-        });
-
         playButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -290,38 +247,6 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void createTabLayout() {
-        //碎片列表
-        fragmentList.clear();
-        searchFeedFolderFragment = new SearchFeedFolderFragment(this);
-        searchLocalFeedListFragment = new SearchLocalFeedListFragment(this);
-        searchFeedItemListFragment = new SearchFeedItemListFragment(this);
-        fragmentList.add(searchFeedFolderFragment);
-        fragmentList.add(searchLocalFeedListFragment);
-        fragmentList.add(searchFeedItemListFragment);
-
-        //标题列表
-        List<String> pageTitleList = new ArrayList<>();
-        pageTitleList.add("文件夹");
-        pageTitleList.add("订阅");
-        pageTitleList.add("文章");
-
-        //新建适配器
-        BaseViewPagerAdapter adapter = new BaseViewPagerAdapter(getSupportFragmentManager(), fragmentList, pageTitleList);
-
-        //设置ViewPager
-        viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(3);
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setTabMode(TabLayout.MODE_FIXED);
-
-        //适配夜间模式
-        if (SkinPreference.getInstance().getSkinName().equals("night")) {
-            tabLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.colorPrimary_night));
-        } else {
-            tabLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.colorPrimary));
-        }
-    }
 
     private void updateTabLayout(final String text) {
         //显示动画
@@ -806,11 +731,6 @@ public class MainActivity extends BaseActivity {
         } else {
             getMenuInflater().inflate(R.menu.main, menu);
         }
-
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
-
-
         return true;
     }
 

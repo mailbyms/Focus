@@ -31,7 +31,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary">
 
-            <android.support.v7.widget.ButtonBarLayout
+            <LinearLayout
                 android:id="@+id/playButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -80,8 +80,7 @@
                     </LinearLayout>
                 </RelativeLayout>
 
-            </android.support.v7.widget.ButtonBarLayout>
-
+            </LinearLayout>
 
         </android.support.v7.widget.Toolbar>
 
