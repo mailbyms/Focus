@@ -403,24 +403,13 @@ public class MainActivity extends BaseActivity {
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withCompactStyle(true)
-//                .withHeaderBackground(R.drawable.moecats)
                 .withTextColorRes(color)
                 .addProfiles(
-                        profile,
-                        new ProfileSettingDrawerItem().withName("添加第三方服务").withDescription("添加内容源").withIcon(GoogleMaterial.Icon.gmd_add).withIdentifier(ADD_AUTH)
+                        profile
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
-
-                        if (!currentProfile){
-                            switch ((int) profile.getIdentifier()){
-                                case ADD_AUTH:
-                                    AuthListActivity.activityStart(MainActivity.this);
-                                    break;
-                            }
-                        }
-
                         return false;
                     }
                 })
