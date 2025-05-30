@@ -15,15 +15,12 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.ihewro.focus.GlobalConfig;
 import com.ihewro.focus.R;
-import com.ihewro.focus.activity.FeedListActivity;
 import com.ihewro.focus.bean.Feed;
 import com.ihewro.focus.bean.FeedRequire;
 import com.ihewro.focus.bean.Help;
-import com.ihewro.focus.bean.UserPreference;
 import com.ihewro.focus.http.HttpInterface;
 import com.ihewro.focus.http.HttpUtil;
 import com.ihewro.focus.util.ImageLoaderManager;
-import com.ihewro.focus.util.RSSUtil;
 import com.ihewro.focus.util.StringUtil;
 import com.ihewro.focus.util.UIUtil;
 import com.ihewro.focus.view.RequireListPopupView;
@@ -116,9 +113,6 @@ public class FeedListAdapter extends BaseQuickAdapter<Feed, BaseViewHolder> {
                     String url = feed.getUrl();
                     if (feed.getUrl().charAt(0) != '/'){
                         url = "/"+url;
-                    }
-                    if (feed.getType().equals("rsshub") && RSSUtil.urlIsContainsRSSHub(feed.getUrl()) == -1){//只有当在线市场的源标记为rsshub，且url中没有rsshub前缀，才会添加当前选择的前缀。
-                        feed.setUrl(UserPreference.getRssHubUrl() + url);
                     }
 
                     Help help;

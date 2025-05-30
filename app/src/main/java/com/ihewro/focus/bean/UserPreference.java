@@ -1,8 +1,5 @@
 package com.ihewro.focus.bean;
 
-import com.blankj.ALog;
-import com.ihewro.focus.GlobalConfig;
-
 import org.litepal.LitePal;
 import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
@@ -180,27 +177,5 @@ public class UserPreference extends LitePalSupport {
             }
         });
     }
-
-
-    public static String getRssHubUrl(){
-
-        String url =  queryValueByKey(RSS_HUB, GlobalConfig.OfficialRSSHUB);
-        if (url.equals(DEFAULT_RSSHUB)){//如果有自定义源则选择这个
-            url =  queryValueByKey(DEFAULT_RSSHUB, GlobalConfig.OfficialRSSHUB);
-            //对自定义源的地址进行处理
-            if (!url.startsWith("http://") && !url.startsWith("https://")){
-                url = "http://" + url;
-            }
-            if (url.endsWith("/")){
-                url = url.substring(0,url.length()-1);
-            }
-            return url;
-        }else {
-            return url;
-        }
-    }
-
-
-
 
 }

@@ -3,7 +3,6 @@ package com.ihewro.focus;
 import android.os.Environment;
 
 import com.ihewro.focus.bean.FeedItem;
-import com.ihewro.focus.bean.UserPreference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,11 +23,6 @@ public class GlobalConfig {
     public static final String storageFolderName = "focus";//所有表情包都在此目录下建立子目录
     public static final String appDirPath = Environment.getExternalStorageDirectory() + "/" + GlobalConfig.storageFolderName + "/";
     public static final String appXMLPath = Environment.getExternalStorageDirectory() + "/" + GlobalConfig.storageFolderName + "/" + "xml/";
-
-    public static final String OfficialRSSHUB = "https://rss.gyjian.eu.org";
-    public static final String MoeratsRsshub = "https://rsshub.rssforever.com";
-    public static final List<String> rssHub = Arrays.asList(OfficialRSSHUB, MoeratsRsshub);
-    public static final List<String> feedRssHub = Arrays.asList(OfficialRSSHUB, MoeratsRsshub, UserPreference.DEFAULT_RSSHUB);
 
     public static final String is_need_update_main = "is_need_update_main";
     //两个是对应的
