@@ -3,16 +3,10 @@ package com.ihewro.focus.bean;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 
-import com.blankj.ALog;
-import com.ihewro.focus.activity.PostDetailActivity;
 import com.ihewro.focus.callback.UICallback;
 import com.ihewro.focus.decoration.ISuspensionInterface;
 import com.ihewro.focus.helper.SwipeInterface;
 import com.ihewro.focus.util.DateUtil;
-import com.ihewro.focus.view.CollectionFolderListLoadingPopupView;
-import com.ihewro.focus.view.CollectionFolderListPopupView;
-import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.BasePopupView;
 
 import org.litepal.LitePal;
 import org.litepal.annotation.Column;
@@ -223,12 +217,13 @@ public class FeedItem extends LitePalSupport implements ISuspensionInterface, Se
     }
 
     public static void clickWhenNotFavorite(Activity activity,Collection collection,UICallback uiCallback){
-        //点击进行收藏
-
-        new XPopup.Builder(activity)
-                .asCustom(new CollectionFolderListLoadingPopupView(activity,collection,uiCallback))
-                .show();
-
+        //直接收藏
+        try {
+            collection.save();
+            uiCallback.doUIWithFlag(true);
+        } catch (LitePalSupportException e) {
+            uiCallback.doUIWithFlag(false);
+        }
     }
 
 
@@ -250,11 +245,8 @@ public class FeedItem extends LitePalSupport implements ISuspensionInterface, Se
     }
 
     public static void clickWhenNotFavorite(Activity activity, FeedItem feedItem, UICallback uiCallback){
-        //点击进行收藏
+        //直接收藏
         Collection collection = new Collection(feedItem.getTitle(),feedItem.getFeedName(),feedItem.getDate(),feedItem.getSummary(),feedItem.getContent(),feedItem.getUrl(),Collection.FEED_ITEM, DateUtil.getNowDateRFCInt());
-
         clickWhenNotFavorite(activity,collection,uiCallback);
-
-
     }
 }
