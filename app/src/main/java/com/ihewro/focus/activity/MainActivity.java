@@ -417,12 +417,10 @@ public class MainActivity extends BaseActivity {
     }
 
     private void updateTabLayout(final String text) {
-
         //显示动画
         searchFeedItemListFragment.showLoading();
         searchLocalFeedListFragment.showLoading();
         searchFeedFolderFragment.showLoading();
-
 
         new Thread(new Runnable() {
             @Override
@@ -439,7 +437,6 @@ public class MainActivity extends BaseActivity {
                 text2 = "%" + text + "%";
                 searchResult3s = LitePal.where("name like ?", text2).find(FeedFolder.class);
 
-
                 UIUtil.runOnUiThread(MainActivity.this,new Runnable() {
                     @Override
                     public void run() {
@@ -450,8 +447,6 @@ public class MainActivity extends BaseActivity {
                 });
             }
         }).start();
-
-
     }
 
 
@@ -730,22 +725,15 @@ public class MainActivity extends BaseActivity {
                 case SHOW_STAR:
                     StarActivity.activityStart(MainActivity.this);
                     break;
-                case SHOW_DISCOVER:
-                    FeedCategoryActivity.activityStart(MainActivity.this);
-                    break;
                 case DRAWER_FOLDER_ITEM:
-//                    ALog.d("名称为" + ((SecondaryDrawerItem) drawerItem).getName() + "id为" + drawerItem.getIdentifier());
                     ArrayList<String> list = new ArrayList<>();
                     list.add(String.valueOf(drawerItem.getIdentifier()));
                     clickAndUpdateMainFragmentData(list, ((SecondaryDrawerItem) drawerItem).getName().toString(),drawerItem.getIdentifier());
                     break;
-
                 case DRAWER_FOLDER:
                     break;
-
             }
         }
-
     }
 
 
@@ -809,7 +797,6 @@ public class MainActivity extends BaseActivity {
         AllDrawerItem = new SecondaryDrawerItem().withName("全部").withIcon(GoogleMaterial.Icon.gmd_home).withSelectable(true).withTag(SHOW_ALL);
         subItems.add(AllDrawerItem);
         subItems.add(new SecondaryDrawerItem().withName("收藏").withIcon(GoogleMaterial.Icon.gmd_star).withSelectable(false).withTag(SHOW_STAR));
-        subItems.add(new SecondaryDrawerItem().withName("发现").withIcon(GoogleMaterial.Icon.gmd_explore).withSelectable(false).withTag(SHOW_DISCOVER));
         subItems.add(new SectionDrawerItem().withName("订阅源").withDivider(false));
 
 

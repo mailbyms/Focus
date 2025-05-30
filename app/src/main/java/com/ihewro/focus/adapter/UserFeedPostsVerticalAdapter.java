@@ -182,27 +182,16 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
 
     private void updateUI(final BaseViewHolder helper,FeedItem item){
         if (item.isRead()){
-//            ALog.d("是否已读" + item.isRead());
             helper.setTextColor(R.id.post_title,activity.getResources().getColor(read_color));
             helper.setTextColor(R.id.rss_name,activity.getResources().getColor(read_content_color));
             helper.setTextColor(R.id.post_summay,activity.getResources().getColor(read_content_color));
             helper.setTextColor(R.id.post_time,activity.getResources().getColor(read_content_color));
-//            helper.setText(R.id.markRead,"标记未读");
         }else {
             helper.setTextColor(R.id.post_title,activity.getResources().getColor(not_read_color));
             helper.setTextColor(R.id.rss_name,activity.getResources().getColor(not_read_content_color));
             helper.setTextColor(R.id.post_summay,activity.getResources().getColor(not_read_content_color));
             helper.setTextColor(R.id.post_time,activity.getResources().getColor(not_read_content_color));
-//            helper.setText(R.id.markRead,"标记已读");
         }
-        if (item.isFavorite()){
-            helper.getView(R.id.favorite).setVisibility(View.VISIBLE);
-//            helper.setText(R.id.star,"取消收藏");
-        }else {
-            helper.getView(R.id.favorite).setVisibility(View.GONE);
-//            helper.setText(R.id.star,"收藏");
-        }
-
     }
 
 
@@ -351,7 +340,7 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
 
     private void initTapView(View view){
         TapTargetView.showFor(activity,                 // `this` is an Activity
-                TapTarget.forView(view, "触发新手教程！", "先别急的进入！点击该图标也可以快速标记已读哦，文章左滑也可以快速标记收藏和已读哦！\n")
+                TapTarget.forView(view, "触发新手教程！", "先别急的进入！点击该图标也可以快速标记已读哦，文章左滑也可以快速标记已读哦！\n")
                         .cancelable(false)
                         .drawShadow(true)
                         .titleTextColor(R.color.colorAccent)
@@ -365,7 +354,6 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
                         UserPreference.updateOrSaveValueByKey(UserPreference.FIRST_INTRO_MAIN_FEED_ITEM,"1");
                     }
                 });
-
     }
 
 

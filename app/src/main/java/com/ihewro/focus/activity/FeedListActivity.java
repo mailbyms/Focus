@@ -47,106 +47,77 @@ import retrofit2.Retrofit;
 
 public class FeedListActivity extends BackActivity {
 
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.appbar)
-    AppBarLayout appbar;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout refreshLayout;
-    private FeedListAdapter feedListAdapter;
-    private List<Feed> feedList = new ArrayList<>();
 
-    public static void activityStart(Activity activity, String websiteName) {
+    private FeedListAdapter adapter;
+    private List<Feed> feedList = new ArrayList<>();
+    private String mName;
+
+    public static void activityStart(Activity activity, String name) {
         Intent intent = new Intent(activity, FeedListActivity.class);
-        intent.putExtra(Constants.KEY_STRING_WEBSITE_ID, websiteName);
+        intent.putExtra("name", name);
         activity.startActivity(intent);
     }
 
-
-    String mName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed_list);
         ButterKnife.bind(this);
-        Intent intent = getIntent();
-        mName = intent.getStringExtra(Constants.KEY_STRING_WEBSITE_ID);
 
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(mName+"的可订阅列表");
-        initView();
-        bindListener();
-        refreshLayout.autoRefresh();
-        refreshLayout.setEnableLoadMore(false);
+        mName = getIntent().getStringExtra("name");
+        toolbar.setTitle(mName);
+
+        initRecyclerView();
+        initRefreshLayout();
+        requestData();
     }
 
-
-    public void initView(){
-        setSupportActionBar(toolbar);
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
-        //初始化列表
+    private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        feedListAdapter = new FeedListAdapter(feedList,FeedListActivity.this,mName);
-
-
-        feedListAdapter.bindToRecyclerView(recyclerView);
-//        feedListAdapter.setEmptyView(R.layout.simple_loading_view,recyclerView);
+        adapter = new FeedListAdapter(feedList, this, mName);
+        adapter.bindToRecyclerView(recyclerView);
     }
 
-    /**
-     * 请求一个网站的可订阅列表
-     */
-    public void requestData(){
-        Retrofit retrofit = HttpUtil.getRetrofit("bean", GlobalConfig.serverUrl,10,10,10);
-        ALog.d("名称为" + mName);
-        Call<List<Feed>> request = retrofit.create(HttpInterface.class).getFeedListByWebsite(mName);
-
-        request.enqueue(new Callback<List<Feed>>() {
-            @Override
-            public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
-                if (response.isSuccessful()){
-                    feedList.clear();
-                    feedList.addAll(response.body());
-
-                    feedListAdapter.setNewData(feedList);
-
-                    if (feedList.size()==0){
-                        feedListAdapter.setEmptyView(R.layout.simple_empty_view,recyclerView);
-                    }
-                    Toasty.success(UIUtil.getContext(),"请求成功", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toasty.error(UIUtil.getContext(),"请求失败2" + response.errorBody(), Toast.LENGTH_SHORT).show();
-                }
-                refreshLayout.finishRefresh(true);
-            }
-
-            @SuppressLint("CheckResult")
-            @Override
-            public void onFailure(Call<List<Feed>> call, Throwable t) {
-                Toasty.error(UIUtil.getContext(),"请求失败2" + t.toString(), Toast.LENGTH_SHORT).show();
-                refreshLayout.finishRefresh(false);
-            }
-        });
-
-    }
-
-
-    public void bindListener(){
+    private void initRefreshLayout() {
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+            public void onRefresh(RefreshLayout refreshLayout) {
                 requestData();
             }
         });
     }
 
+    private void requestData() {
+        Retrofit retrofit = HttpUtil.getRetrofit("bean", GlobalConfig.serverUrl, 10, 10, 10);
+        Call<List<Feed>> request = retrofit.create(HttpInterface.class).searchFeedListByName(mName);
+        request.enqueue(new Callback<List<Feed>>() {
+            @Override
+            public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
+                if (response.isSuccessful()) {
+                    feedList.clear();
+                    feedList.addAll(response.body());
+                    adapter.setNewData(feedList);
+                    if (feedList.size() == 0) {
+                        adapter.setEmptyView(R.layout.simple_empty_view);
+                    }
+                } else {
+                    Toasty.error(FeedListActivity.this, "获取数据失败").show();
+                }
+                refreshLayout.finishRefresh();
+            }
+
+            @Override
+            public void onFailure(Call<List<Feed>> call, Throwable t) {
+                Toasty.error(FeedListActivity.this, "网络请求失败").show();
+                refreshLayout.finishRefresh();
+            }
+        });
+    }
 }
