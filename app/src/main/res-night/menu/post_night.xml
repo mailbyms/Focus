@@ -15,7 +15,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/text_setting"
-        android:icon="@drawable/ic_more_vert_black_24dp"
+        android:icon="@drawable/ic_more_vert_black_24dp_night"
         android:orderInCategory="100"
         android:title="阅读设置"
         app:showAsAction="always" />

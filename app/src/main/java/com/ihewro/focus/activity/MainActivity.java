@@ -44,7 +44,6 @@ import com.ihewro.focus.view.FilterPopupView;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.enums.PopupPosition;
 import com.lxj.xpopup.interfaces.SimpleCallback;
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -53,7 +52,6 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.holder.BadgeStyle;
 import com.mikepenz.materialdrawer.model.ExpandableBadgeDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
@@ -80,8 +78,6 @@ public class MainActivity extends BaseActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.search_view)
-    MaterialSearchView searchView;
     @BindView(R.id.playButton)
     LinearLayout playButton;
     @BindView(R.id.fl_main_body)
@@ -94,12 +90,6 @@ public class MainActivity extends BaseActivity {
     private static final int DRAWER_FOLDER_ITEM = 847;
     private static final int DRAWER_FOLDER = 301;
     private static final int SHOW_ALL = 14;
-    private static final int SHOW_STAR = 876;
-    private static final int SHOW_DISCOVER = 509;
-    private static final int ADD_AUTH = 24;
-    private static final int FEED_MANAGE = 460;
-    private static final int SETTING = 911;
-    private static final int PAY_SUPPORT = 71;
     private static final int FEED_FOLDER_IDENTIFY_PLUS = 9999;
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
@@ -243,17 +233,6 @@ public class MainActivity extends BaseActivity {
                 return true;
             }
 
-
-            /*   @Override
-            public void onLongPress(MotionEvent e) {
-                //显示当前列表的的信息
-                super.onLongPress(e);
-                new MaterialDialog.Builder(MainActivity.this)
-                        .title(toolbarTitle.getText())
-                        .content("全部数目" + feedPostsFragment.getFeedItemNum() + "\n" + "未读数目" + feedPostsFragment.getNotReadNum())
-                        .show();
-
-            }*/
         });
 
 
@@ -430,8 +409,7 @@ public class MainActivity extends BaseActivity {
 //                .withHeaderBackground(R.drawable.moecats)
                 .withTextColorRes(color)
                 .addProfiles(
-                        profile,
-                        new ProfileSettingDrawerItem().withName("添加第三方服务").withDescription("添加内容源").withIcon(GoogleMaterial.Icon.gmd_add).withIdentifier(ADD_AUTH)
+                        profile
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
@@ -486,6 +464,8 @@ public class MainActivity extends BaseActivity {
         drawer.getStickyFooter().findViewById(R.id.mode).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                stopService(new Intent(MainActivity.this, TimingService.class));
+
                 if (!finalFlag) {//flag true 表示夜间模式
                     SkinCompatManager.getInstance().loadSkin("night", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
                     new Handler().postDelayed(new Runnable() {
@@ -643,12 +623,7 @@ public class MainActivity extends BaseActivity {
 
         AllDrawerItem = new SecondaryDrawerItem().withName("全部").withIcon(GoogleMaterial.Icon.gmd_home).withSelectable(true).withTag(SHOW_ALL);
         subItems.add(AllDrawerItem);
-        subItems.add(new SecondaryDrawerItem().withName("收藏").withIcon(GoogleMaterial.Icon.gmd_star).withSelectable(false).withTag(SHOW_STAR));
-        subItems.add(new SecondaryDrawerItem().withName("发现").withIcon(GoogleMaterial.Icon.gmd_explore).withSelectable(false).withTag(SHOW_DISCOVER));
         subItems.add(new SectionDrawerItem().withName("订阅源").withDivider(false));
-
-
-
 
         List<FeedFolder> feedFolderList = LitePal.order("ordervalue").find(FeedFolder.class);
         for (int i = 0; i < feedFolderList.size(); i++) {
@@ -749,10 +724,6 @@ public class MainActivity extends BaseActivity {
             getMenuInflater().inflate(R.menu.main, menu);
         }
 
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
-
-
         return true;
     }
 
@@ -768,8 +739,8 @@ public class MainActivity extends BaseActivity {
             case R.id.action_search:
                 // 触发下拉刷新
                 if (feedPostsFragment != null) {
-                 //   feedPostsFragment.triggerRefresh();
-                                }
+                    feedPostsFragment.triggerRefresh();
+                }
                 break;
         }
         return true;
@@ -779,10 +750,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        //返回键关闭🔍搜�?
-        if (searchView.isSearchOpen()) {
-            searchView.closeSearch();
-        } else {
             long currentTime = System.currentTimeMillis();
             if ((currentTime - startTime) >= 2000) {
                 Toast.makeText(MainActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
@@ -790,7 +757,6 @@ public class MainActivity extends BaseActivity {
             } else {
                 finish();
             }
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)

@@ -1,57 +1,39 @@
 package com.ihewro.focus.fragemnt;
 
 
+import static android.content.Context.BIND_AUTO_CREATE;
+
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.ALog;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.callback.ItemDragAndSwipeCallback;
-import com.chad.library.adapter.base.listener.OnItemSwipeListener;
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetView;
 import com.ihewro.focus.R;
-import com.ihewro.focus.activity.MainActivity;
 import com.ihewro.focus.adapter.UserFeedPostsVerticalAdapter;
 import com.ihewro.focus.bean.EventMessage;
 import com.ihewro.focus.bean.Feed;
 import com.ihewro.focus.bean.FeedItem;
-import com.ihewro.focus.bean.UserPreference;
 import com.ihewro.focus.callback.RequestFeedItemListCallback;
-import com.ihewro.focus.decoration.DividerItemDecoration;
 import com.ihewro.focus.decoration.SuspensionDecoration;
 import com.ihewro.focus.helper.MyLinearLayoutManager;
 import com.ihewro.focus.helper.SimpleItemTouchHelperCallback;
 import com.ihewro.focus.task.RequestFeedListDataService;
-import com.ihewro.focus.task.RequestFeedListDataTask;
 import com.ihewro.focus.util.UIUtil;
-import com.ihewro.focus.view.FilterPopupView;
-import com.mikepenz.fastadapter.adapters.ItemAdapter;
-import com.mikepenz.materialize.util.UIUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -62,7 +44,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,8 +51,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
-
-import static android.content.Context.BIND_AUTO_CREATE;
 
 /**
  * 用户的最新订阅信息文章列表的碎片
@@ -81,7 +60,6 @@ public class UserFeedUpdateContentFragment extends Fragment {
     SmartRefreshLayout refreshLayout;
     private SuspensionDecoration mDecoration;
     List<FeedItem> eList = new ArrayList<FeedItem>();
-    List<FeedItem> tempList = new ArrayList<FeedItem>();
     public static final String FEED_LIST_ID = "FEED_LIST_ID";
 
     UserFeedPostsVerticalAdapter adapter;
@@ -590,5 +568,14 @@ public class UserFeedUpdateContentFragment extends Fragment {
             this.feedItemNum = LitePal.count(FeedItem.class);
         }
         return this.feedItemNum;
+    }
+
+    /**
+     * 触发刷新
+     */
+    public void triggerRefresh() {
+        if (refreshLayout != null) {
+            refreshLayout.autoRefresh();
+        }
     }
 }

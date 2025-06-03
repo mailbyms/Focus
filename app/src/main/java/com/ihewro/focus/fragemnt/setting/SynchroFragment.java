@@ -18,10 +18,8 @@ public class SynchroFragment extends SettingFragment {
 
 
     private SwitchPreferenceCompat use_internet_while_open;
-    private Preference choose_rsshub;
     private SwitchPreferenceCompat auto_name;
 
-    private Preference ownrsshub;
     private Preference time_interval;
     private SwitchPreferenceCompat only_wifi;
 
@@ -38,10 +36,8 @@ public class SynchroFragment extends SettingFragment {
     @Override
     public void initPreferenceComponent() {
         use_internet_while_open = (SwitchPreferenceCompat)findPreference(getString(R.string.pref_key_use_internet_while_open));
-        choose_rsshub = findPreference(getString(R.string.pref_key_rsshub_choice));
         auto_name = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_key_auto_name));
 
-        ownrsshub = findPreference(getString(R.string.pref_key_own_rsshub));
         time_interval = findPreference(getString(R.string.pref_key_refresh_interval));
 
         only_wifi = (SwitchPreferenceCompat) findPreference(getString(R.string.pref_key_only_use_wifi));
@@ -99,14 +95,6 @@ public class SynchroFragment extends SettingFragment {
             }
         });
 
-        ownrsshub.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-
-                return false;
-            }
-        });
-
         use_internet_while_open.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -128,14 +116,6 @@ public class SynchroFragment extends SettingFragment {
                 }else {
                     UserPreference.updateOrSaveValueByKey(UserPreference.notWifi,"0");
                 }
-                return false;
-            }
-        });
-
-
-        choose_rsshub.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
                 return false;
             }
         });

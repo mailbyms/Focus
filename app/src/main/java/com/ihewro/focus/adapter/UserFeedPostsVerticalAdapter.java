@@ -16,7 +16,6 @@ import com.ihewro.focus.activity.PostDetailActivity;
 import com.ihewro.focus.bean.EventMessage;
 import com.ihewro.focus.bean.FeedItem;
 import com.ihewro.focus.bean.UserPreference;
-import com.ihewro.focus.callback.UICallback;
 import com.ihewro.focus.decoration.SuspensionDecoration;
 import com.ihewro.focus.helper.ItemTouchHelperAdapter;
 import com.ihewro.focus.helper.MyViewHolder;
@@ -36,7 +35,6 @@ import org.litepal.crud.callback.SaveCallback;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.dmoral.toasty.Toasty;
 import skin.support.utils.SkinPreference;
 
 /**
@@ -225,27 +223,36 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
             @Override
             public boolean onLongClick(View v) {
 
-                FeedItem.clickWhenNotFavorite(activity, item, new UICallback() {
-                    @Override
-                    public void doUIWithFlag(final boolean flag) {
+                String[] list = new String[]{"将以上部分标记为已读","将当前文章标记已（未）读", "将以下部分标记为已读"};
 
-                        //保存到数据库
-                        item.setFavorite(flag);
-                        item.saveAsync().listen(new SaveCallback() {
+                if (item.isRead()){
+                    list[1] = "将当前文章标记未读";
+                }else {
+                    list[1] = "将当前文章标记已读";
+                }
+                new XPopup.Builder(activity)
+                        .asCenterList("操作", list, new OnSelectListener() {
                             @Override
-                            public void onFinish(boolean success) {
-                                //通知
-                                if (flag){
-                                    Toasty.success(activity,"收藏成功").show();
-                                }else {
-                                    Toasty.success(activity,"取消收藏成功").show();
+                            public void onSelect(int position, String text) {
+                                if (position == 0){
+                                    markReadOfTop(helper,item);
+                                }else if (position == 2){
+                                    markReadOfBottom(helper,item);
+                                }else if (position == 1){
+                                    //当前项目标记已读/未读
+                                    item.setRead(!item.isRead());
+                                    item.saveAsync().listen(new SaveCallback() {
+                                        @Override
+                                        public void onFinish(boolean success) {
+                                            notifyItemChanged(helper.getAdapterPosition());
+                                            //修改首页未读数目相关界面
+                                            EventBus.getDefault().post(new EventMessage(EventMessage.MAIN_READ_NUM_EDIT));
+                                        }
+                                    });
                                 }
-                                notifyItemChanged(helper.getAdapterPosition());
                             }
-                        });
-
-                    }
-                });
+                        })
+                        .show();
 
                 return true;
             }
@@ -270,42 +277,6 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
             }
         });
 
-        helper.getView(R.id.content_sub2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String[] list = new String[]{"将以上部分标记为已读","将当前文章标记已（未）读", "将以下部分标记为已读"};
-
-                if (item.isRead()){
-                    list[1] = "将当前文章标记未读";
-                }else {
-                    list[1] = "将当前文章标记已读";
-                }
-                new XPopup.Builder(activity)
-                        .asCenterList("操作", list, new OnSelectListener() {
-                                    @Override
-                                    public void onSelect(int position, String text) {
-                                        if (position == 0){
-                                            markReadOfTop(helper,item);
-                                        }else if (position == 2){
-                                            markReadOfBottom(helper,item);
-                                        }else if (position == 1){
-                                            //当前项目标记已读/未读
-                                            item.setRead(!item.isRead());
-                                            item.saveAsync().listen(new SaveCallback() {
-                                                @Override
-                                                public void onFinish(boolean success) {
-                                                    notifyItemChanged(helper.getAdapterPosition());
-                                                    //修改首页未读数目相关界面
-                                                    EventBus.getDefault().post(new EventMessage(EventMessage.MAIN_READ_NUM_EDIT));
-                                                }
-                                            });
-                                        }
-                                    }
-                                })
-                        .show();
-            }
-        });
     }
 
     private void markReadOfTop(final BaseViewHolder helper, final FeedItem item){
