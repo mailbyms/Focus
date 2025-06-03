@@ -9,15 +9,9 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_rsshub"
-        android:icon="@drawable/ic_autorenew_black_24dp"
-        android:title="切换rsshub源"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/action_search"
-        android:icon="@drawable/ic_search_black"
-        android:title="@string/abc_search_hint"
+        android:icon="@drawable/ic_autorenew_black_24dp"
+        android:title="刷新"
         app:showAsAction="always" />
 
 </menu>

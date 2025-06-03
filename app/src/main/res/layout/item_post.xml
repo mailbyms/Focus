@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/post_title"
             android:layout_marginTop="10dp"
-            android:background="#F8F8F8"
+            android:background="@color/colorPrimary"
             android:orientation="horizontal">
 
             <TextView
@@ -77,31 +77,15 @@
                 android:layout_marginLeft="10dp"
                 android:text="12:22" />
 
-
-            <ImageView
-                android:id="@+id/operations"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/ic_more_vert" />
-
-            <TextView
-                android:id="@+id/favorite"
-                android:layout_width="58sp"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/operations"
-                android:drawablePadding="2dp"
-                android:gravity="center"
-                android:text="已收藏" />
-
             <TextView
                 android:id="@+id/rss_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/favorite"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:drawablePadding="2dp"
                 android:gravity="center"
+                android:layout_marginRight="10dp"
                 android:text="人民一学的bilibili动态" />
 
             <ImageView

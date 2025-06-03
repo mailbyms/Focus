@@ -87,26 +87,6 @@ public class RequestFeedListDataTask extends AsyncTask<Feed, Integer, Message> {
             ALog.d("超时时间" + timeout);
             final String originUrl = url;
 
-            //判断RSSHUB的源地址，替换成现在的地址
-            for (int i = 0; i< GlobalConfig.rssHub.size(); i++){
-                if (url.contains(GlobalConfig.rssHub.get(i))){//需要根据用户的设置替换rss源
-                    String replace;
-                    if (!StringUtil.trim(feed.getRsshub()).equals("") && !StringUtil.trim(feed.getRsshub()).equals(UserPreference.DEFAULT_RSSHUB)){
-                        replace = feed.getRsshub();
-                    }else {
-                        if (!StringUtil.trim(feedFolder.getRsshub()).equals("") && !StringUtil.trim(feed.getRsshub()).equals(UserPreference.DEFAULT_RSSHUB)){
-                            replace = feedFolder.getRsshub();
-                        }else {
-                            replace = UserPreference.getRssHubUrl();
-                        }
-                    }
-
-                    url = url.replace(GlobalConfig.rssHub.get(i),replace);
-                    ALog.d("需要ti替换的" + replace + "结果" + url);
-                  break;
-                }
-            }
-
             Call<String> call;
 
             if (url.charAt(url.length() -1) == '/'){//去掉末尾的/

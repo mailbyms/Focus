@@ -2,8 +2,6 @@ package com.ihewro.focus.http;
 
 import com.ihewro.focus.bean.Feed;
 import com.ihewro.focus.bean.FeedRequire;
-import com.ihewro.focus.bean.Website;
-import com.ihewro.focus.bean.WebsiteCategory;
 
 import java.util.List;
 
@@ -29,30 +27,13 @@ public interface HttpInterface {
     @GET
     Call<String> getRSSData(@Url String with);
 
- /*   @GET("{with}")
-    Call<String> getRSSDataWith(@Path(value = "with", encoded = true) String with);
-*/
-
     @GET
     Call<String> getRSSDataWith(@Url String with);
-
-
-    @GET("webcategory")
-    Call<List<WebsiteCategory>> getCategoryList();
-
-    @GET("weblist")
-    Call<List<Website>> getWebsiteListByCategory(@Query("name") String name);
-
-    @GET("feedlist")
-    Call<List<Feed>> getFeedListByWebsite(@Query("name") String name);
 
     @GET("feedRequireList")
     Call<List<FeedRequire>> getFeedRequireListByWebsite(@Query("id") String id);
 
     @GET("searchFeedListByName")
     Call<List<Feed>> searchFeedListByName(@Query("name") String name);
-
-    @GET("searchWebsiteByName")
-    Call<List<Website>> searchWebsiteByName(@Query("name") String name);
 
 }

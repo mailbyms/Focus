@@ -3,19 +3,13 @@ package com.ihewro.focus.fragemnt.setting;
 
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.SwitchPreferenceCompat;
-import android.text.InputType;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.ALog;
 import com.ihewro.focus.GlobalConfig;
 import com.ihewro.focus.R;
 import com.ihewro.focus.bean.UserPreference;
 import com.ihewro.focus.task.TimingService;
-
-import java.util.List;
-
-import es.dmoral.toasty.Toasty;
 
 /**
  * 同步的设置
@@ -76,15 +70,6 @@ public class SynchroFragment extends SettingFragment {
             only_wifi.setChecked(true);
         }
 
-
-        final int pos = GlobalConfig.rssHub.indexOf(UserPreference.queryValueByKey(UserPreference.RSS_HUB,GlobalConfig.OfficialRSSHUB));
-        if (pos != 2){//如果不是自定义源，则自定义源应该禁止操作
-            ownrsshub.setEnabled(false);
-        }else {//否则自定义源可以操作
-            ownrsshub.setEnabled(true);
-        }
-
-
     }
 
     @Override
@@ -117,25 +102,6 @@ public class SynchroFragment extends SettingFragment {
         ownrsshub.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-
-                new MaterialDialog.Builder(getActivity())
-                        .title("填写自定义RSSHub源")
-                        .content("输入你的地址：")
-                        .inputType(InputType.TYPE_CLASS_TEXT)
-                        .input("",UserPreference.queryValueByKey(UserPreference.OWN_RSSHUB, GlobalConfig.OfficialRSSHUB)
-, new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(MaterialDialog dialog, CharSequence input) {
-                                String name = dialog.getInputEditText().getText().toString().trim();
-                                if (name.equals("")){
-                                    Toasty.info(getActivity(),"请勿为空😯").show();
-                                }else {
-                                    UserPreference.updateOrSaveValueByKey(UserPreference.OWN_RSSHUB,dialog.getInputEditText().getText().toString().trim());
-                                    Toasty.success(getActivity(),"填写成功").show();
-                                }
-                            }
-                        }).show();
-
 
                 return false;
             }
@@ -170,32 +136,6 @@ public class SynchroFragment extends SettingFragment {
         choose_rsshub.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                //显示弹窗
-                //之前选择的位置
-                final int select = GlobalConfig.rssHub.indexOf(UserPreference.queryValueByKey(UserPreference.RSS_HUB,GlobalConfig.OfficialRSSHUB));
-                ALog.d(UserPreference.getRssHubUrl());
-                List<String> list = GlobalConfig.rssHub;
-                new MaterialDialog.Builder(getActivity())
-                        .title("rsshub源选择")
-                        .items(list)
-                        .itemsCallbackSingleChoice(select, new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                if (which>=0 && which<3){
-                                    UserPreference.updateOrSaveValueByKey(UserPreference.RSS_HUB,GlobalConfig.rssHub.get(which));
-                                    if (which!=2){
-                                        ownrsshub.setEnabled(false);
-                                    }else {
-                                        ownrsshub.setEnabled(true);
-                                    }
-                                    return true;
-                                }
-                                return false;
-                            }
-                        })
-                        .positiveText("选择")
-                        .show();
-
                 return false;
             }
         });

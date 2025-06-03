@@ -1,6 +1,7 @@
 package com.ihewro.focus.adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.recyclerview.extensions.AsyncListDiffer;
 import android.support.v7.util.DiffUtil;
@@ -11,6 +12,8 @@ import android.widget.ImageView;
 import com.blankj.ALog;
 import com.chad.library.adapter.base.BaseItemDraggableAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.ihewro.focus.R;
 import com.ihewro.focus.activity.PostDetailActivity;
 import com.ihewro.focus.bean.EventMessage;
@@ -19,6 +22,7 @@ import com.ihewro.focus.bean.UserPreference;
 import com.ihewro.focus.callback.UICallback;
 import com.ihewro.focus.decoration.SuspensionDecoration;
 import com.ihewro.focus.helper.ItemTouchHelperAdapter;
+import com.ihewro.focus.helper.ItemTouchHelperViewHolder;
 import com.ihewro.focus.helper.MyViewHolder;
 import com.ihewro.focus.helper.SimpleItemTouchHelperCallback;
 import com.ihewro.focus.util.DataUtil;
@@ -282,7 +286,11 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
                     list[1] = "将当前文章标记已读";
                 }
                 new XPopup.Builder(activity)
-                        .asCenterList("操作", list, new OnSelectListener() {
+                        .atView(helper.getView(R.id.operations))  // 依附于所点击的View，内部会自动判断在上方或者下方显示
+                        .hasShadowBg(false)
+                        .asAttachList(list,
+                                new int[]{},
+                                new OnSelectListener() {
                                     @Override
                                     public void onSelect(int position, String text) {
                                         if (position == 0){

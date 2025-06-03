@@ -10,6 +10,9 @@ import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.ButtonBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -24,13 +27,17 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.ALog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.ihewro.focus.GlobalConfig;
 import com.ihewro.focus.R;
+import com.ihewro.focus.adapter.BaseViewPagerAdapter;
 import com.ihewro.focus.bean.EventMessage;
 import com.ihewro.focus.bean.Feed;
 import com.ihewro.focus.bean.FeedFolder;
 import com.ihewro.focus.bean.FeedItem;
 import com.ihewro.focus.bean.Help;
+import com.ihewro.focus.bean.UserPreference;
 import com.ihewro.focus.fragemnt.UserFeedUpdateContentFragment;
 import com.ihewro.focus.fragemnt.search.SearchFeedFolderFragment;
 import com.ihewro.focus.fragemnt.search.SearchFeedItemListFragment;
@@ -115,7 +122,7 @@ public class MainActivity extends BaseActivity {
     private Fragment currentFragment = null;
     private List<IDrawerItem> subItems = new ArrayList<>();
     private Drawer drawer;
-    private FeedListShadowPopupView popupView;//点击顶部标题的弹窗
+    private FeedListShadowPopupView popupView;//点击顶部标题的弹�?
     private FilterPopupView drawerPopupView;//右侧边栏弹窗
     private List<String> errorFeedIdList = new ArrayList<>();
 
@@ -174,13 +181,13 @@ public class MainActivity extends BaseActivity {
             //没有权限 1. 申请权限
             EasyPermissions.requestPermissions(
                     new PermissionRequest.Builder(this, RQUEST_STORAGE_READ, perms)
-                            .setRationale("需要存储器读写权限以便后续备份和导入导出功能使用")
+                            .setRationale("需要存储器读写权限以便后续备份和导入导出功能使�?)
                             .setPositiveButtonText("确定")
                             .setNegativeButtonText("取消")
                             .build());
         }
 
-        //开启定时任务
+        //开启定时任�?
         startTimeService();
 
 
@@ -195,9 +202,9 @@ public class MainActivity extends BaseActivity {
         playButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                //加载框
+                //加载�?
                 final MaterialDialog loading = new MaterialDialog.Builder(MainActivity.this)
-                        .content("统计数据中……")
+                        .content("统计数据中…�?)
                         .progress(false, 0, true)
                         .build();
                 loading.show();
@@ -228,7 +235,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public boolean onDoubleTap(MotionEvent e) {//双击事件
-                //回顶�?
+                //回顶�?
                 ALog.d("双击");
                 EventBus.getDefault().post(new EventMessage(EventMessage.GO_TO_LIST_TOP));
 
@@ -354,7 +361,7 @@ public class MainActivity extends BaseActivity {
                                         for (int i = 0; i < feeds.size(); i++) {
                                             list.add(String.valueOf(feeds.get(i).getId()));
                                         }
-                                        //切换到指定文件夹�?
+                                        //切换到指定文件夹�?
                                         clickAndUpdateMainFragmentData(list, popupView.getFeedFolders().get(position).getName(),-1);
                                         popupView.dismiss();//关闭弹窗
                                     }
@@ -379,10 +386,10 @@ public class MainActivity extends BaseActivity {
     //初始化侧边栏
     public void initDrawer() {
 
-        //TODO:构造侧边栏项目 使用线程�?
+        //TODO:构造侧边栏项目 使用线程�?
         createDrawer();
 
-        //构造右侧栏�?
+        //构造右侧栏�?
         createRightDrawer();
 
     }
@@ -395,7 +402,7 @@ public class MainActivity extends BaseActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //初始化侧边栏  子线程刷�?不要阻塞
+                //初始化侧边栏  子线程刷�?不要阻塞
                 refreshLeftDrawerFeedList(false);
                 UIUtil.runOnUiThread(MainActivity.this, new Runnable() {
                     @Override
@@ -415,7 +422,7 @@ public class MainActivity extends BaseActivity {
     private void buildDrawer(){
         //顶部
         // Create a few sample profile
-        final IProfile profile = new ProfileDrawerItem().withName("本地RSS").withEmail("数据备份在本地");
+        final IProfile profile = new ProfileDrawerItem().withName("本地RSS").withEmail("数据备份在本�?);
 
         int color;
         if(SkinPreference.getInstance().getSkinName().equals("night")){
@@ -431,7 +438,7 @@ public class MainActivity extends BaseActivity {
                 .withTextColorRes(color)
                 .addProfiles(
                         profile,
-                        new ProfileSettingDrawerItem().withName("添加第三方服务").withDescription("添加内容源").withIcon(GoogleMaterial.Icon.gmd_add).withIdentifier(ADD_AUTH)
+                        new ProfileSettingDrawerItem().withName("添加第三方服�?).withDescription("添加内容�?).withIcon(GoogleMaterial.Icon.gmd_add).withIdentifier(ADD_AUTH)
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
@@ -493,7 +500,7 @@ public class MainActivity extends BaseActivity {
                         public void run() {
                             recreate();
                         }
-                    }, 200); // 延时1�?
+                    }, 200); // 延时1�?
                 } else {
                     SkinCompatManager.getInstance().restoreDefaultTheme();
                     new Handler().postDelayed(new Runnable() {
@@ -501,7 +508,7 @@ public class MainActivity extends BaseActivity {
                         public void run() {
                             recreate();
                         }
-                    }, 200); // 延时1�?
+                    }, 200); // 延时1�?
                 }
             }
         });
@@ -533,7 +540,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 selectIdentify = drawer.getCurrentSelection();
-                ALog.d("选择项" + selectIdentify);
+                ALog.d("选择�? + selectIdentify);
                 expandPositions = drawer.getExpandableExtension().getExpandedItems();
                 refreshLeftDrawerFeedList(true);
                 UIUtil.runOnUiThread(MainActivity.this, new Runnable() {
@@ -548,7 +555,7 @@ public class MainActivity extends BaseActivity {
                             drawer.getExpandableExtension().expand(temp[i]);
                         }
 
-                        //TODO: 当一开始选中文件夹的时候总是报错�?
+                        //TODO: 当一开始选中文件夹的时候总是报错�?
                         /*new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -568,8 +575,14 @@ public class MainActivity extends BaseActivity {
                 case SHOW_ALL:
                     clickAndUpdateMainFragmentData(new ArrayList<String>(), "全部文章",drawerItem.getIdentifier());
                     break;
+                case SHOW_STAR:
+                    StarActivity.activityStart(MainActivity.this);
+                    break;
+                case SHOW_DISCOVER:
+                    FeedCategoryActivity.activityStart(MainActivity.this);
+                    break;
                 case DRAWER_FOLDER_ITEM:
-//                    ALog.d("名称�? + ((SecondaryDrawerItem) drawerItem).getName() + "id�? + drawerItem.getIdentifier());
+//                    ALog.d("名称�? + ((SecondaryDrawerItem) drawerItem).getName() + "id�? + drawerItem.getIdentifier());
                     ArrayList<String> list = new ArrayList<>();
                     list.add(String.valueOf(drawerItem.getIdentifier()));
                     clickAndUpdateMainFragmentData(list, ((SecondaryDrawerItem) drawerItem).getName().toString(),drawerItem.getIdentifier());
@@ -589,13 +602,13 @@ public class MainActivity extends BaseActivity {
         if (drawerItem.getTag() != null) {
             switch ((int) drawerItem.getTag()) {
                 case DRAWER_FOLDER:
-                    //获取到这个文件夹的数�?
+                    //获取到这个文件夹的数�?
                     new XPopup.Builder(MainActivity.this)
                             .asCustom(new FeedFolderOperationPopupView(MainActivity.this, drawerItem.getIdentifier() - FEED_FOLDER_IDENTIFY_PLUS, ((ExpandableBadgeDrawerItem) drawerItem).getName().toString(), "", new Help(false)))
                             .show();
                     break;
                 case DRAWER_FOLDER_ITEM:
-                    //获取到这个feed的数�?
+                    //获取到这个feed的数�?
                     new XPopup.Builder(MainActivity.this)
                             .asCustom(new FeedOperationPopupView(MainActivity.this, drawerItem.getIdentifier(), ((SecondaryDrawerItem) drawerItem).getName().toString(), "", new Help(false)))
                             .show();
@@ -635,7 +648,7 @@ public class MainActivity extends BaseActivity {
 
 
     /**
-     * 获取用户的订阅数据，显示在左侧边栏的drawer�?
+     * 获取用户的订阅数据，显示在左侧边栏的drawer�?
      */
     public synchronized void refreshLeftDrawerFeedList(boolean isUpdate) {
 
@@ -645,7 +658,7 @@ public class MainActivity extends BaseActivity {
         subItems.add(AllDrawerItem);
         subItems.add(new SecondaryDrawerItem().withName("收藏").withIcon(GoogleMaterial.Icon.gmd_star).withSelectable(false).withTag(SHOW_STAR));
         subItems.add(new SecondaryDrawerItem().withName("发现").withIcon(GoogleMaterial.Icon.gmd_explore).withSelectable(false).withTag(SHOW_DISCOVER));
-        subItems.add(new SectionDrawerItem().withName("订阅源").withDivider(false));
+        subItems.add(new SectionDrawerItem().withName("订阅�?).withDivider(false));
 
 
 
@@ -670,7 +683,7 @@ public class MainActivity extends BaseActivity {
                     haveErrorFeedInCurrentFolder = true;
                     secondaryDrawerItem.withIcon(GoogleMaterial.Icon.gmd_sync_problem);
                 } else {
-                    //TODO: 加载订阅的图�?
+                    //TODO: 加载订阅的图�?
                     secondaryDrawerItem.withIcon(GoogleMaterial.Icon.gmd_rss_feed);
 
 
@@ -693,7 +706,7 @@ public class MainActivity extends BaseActivity {
             );
 
             ALog.d("文件夹的identity" + (feedFolderList.get(i).getId()+FEED_FOLDER_IDENTIFY_PLUS));
-            //恢复折叠状�?
+            //恢复折叠状�?
 
             //
 //            one.getViewHolder(R.)
@@ -704,7 +717,7 @@ public class MainActivity extends BaseActivity {
             if (notReadNum != 0) {
                 one.withBadge(notReadNum + "");
             }
-            //添加文件�?
+            //添加文件�?
             subItems.add(one);
         }
 
@@ -715,7 +728,7 @@ public class MainActivity extends BaseActivity {
 
 
     /**
-     * 添加或者显�?fragment
+     * 添加或者显�?fragment
      *
      * @param transaction
      * @param fragment
@@ -765,11 +778,28 @@ public class MainActivity extends BaseActivity {
 
                 drawerPopupView.toggle();
                 break;
-            case R.id.action_search:
-                // 触发下拉刷新
-                if (feedPostsFragment != null) {
-                 //   feedPostsFragment.triggerRefresh();
+
+            case R.id.action_rsshub:
+                //显示弹窗
+                //之前选择的位�?
+                final int select = GlobalConfig.rssHub.indexOf(UserPreference.queryValueByKey(UserPreference.RSS_HUB,GlobalConfig.OfficialRSSHUB));
+                ALog.d(UserPreference.getRssHubUrl());
+                List<String> list = GlobalConfig.rssHub;
+                new MaterialDialog.Builder(this)
+                        .title("rsshub源选择")
+                        .items(list)
+                        .itemsCallbackSingleChoice(select, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                if (which>=0 && which<3){
+                                    UserPreference.updateOrSaveValueByKey(UserPreference.RSS_HUB,GlobalConfig.rssHub.get(which));
+                                    return true;
                                 }
+                                return false;
+                            }
+                        })
+                        .positiveText("选择")
+                        .show();
                 break;
         }
         return true;
@@ -779,13 +809,13 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        //返回键关闭🔍搜�?
+        //返回键关闭🔍搜�?
         if (searchView.isSearchOpen()) {
             searchView.closeSearch();
         } else {
             long currentTime = System.currentTimeMillis();
             if ((currentTime - startTime) >= 2000) {
-                Toast.makeText(MainActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "再按一次退�?, Toast.LENGTH_SHORT).show();
                 startTime = currentTime;
             } else {
                 finish();
@@ -803,7 +833,7 @@ public class MainActivity extends BaseActivity {
                     ALog.d("重构");
                     updateDrawer();
                 }
-            }, 100); // 延迟一下，因为数据异步存储需要时�?
+            }, 100); // 延迟一下，因为数据异步存储需要时�?
         }else if (EventMessage.updateBadge.contains(eventBusMessage.getType())){//只需要修改侧边栏阅读书目
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -812,7 +842,7 @@ public class MainActivity extends BaseActivity {
                     ALog.d("更新左侧边栏");
                     updateDrawer();
                 }
-            }, 100); // 延迟一下，因为数据异步存储需要时�?
+            }, 100); // 延迟一下，因为数据异步存储需要时�?
 
         } else if (Objects.equals(eventBusMessage.getType(), EventMessage.FEED_PULL_DATA_ERROR)) {
 //            ALog.d("收到错误FeedId List");
@@ -855,7 +885,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ALog.d("mainActivity 被销毁");
+        ALog.d("mainActivity 被销�?);
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }

@@ -1,8 +1,5 @@
 package com.ihewro.focus.bean;
 
-import com.blankj.ALog;
-import com.ihewro.focus.GlobalConfig;
-
 import org.litepal.LitePal;
 import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
@@ -26,12 +23,11 @@ public class UserPreference extends LitePalSupport {
 
     public static final String USE_INTERNET_WHILE_OPEN =  "pref_key_use_internet_while_open";
     public static final String AUTO_SET_FEED_NAME =  "AUTO_SET_FEED_NAME";
-    public static final String OWN_RSSHUB =  "自定义源";
     public static final String ODER_CHOICE = "ODER_CHOICE";//排序规则
     public static final String FILTER_CHOICE = "FILTER_CHOICE";//过滤规则
-    public static final String notOpenClick = "notOpenClick";//不要下拉打开连接
-    public static final String notStar = "notStar";//不要双击收藏
-    public static final String notToTop = "notToTop";//不要双击回顶部
+    public static final String notOpenClick = "notOpenClick";//是否禁止上拉打开外链
+    public static final String doubleClickStar = "doubleClickStar";//是否禁止双击收藏
+    public static final String doubleClickTop = "doubleClickTop";//是否禁止双击顶部
     public static final String not_show_image_in_list = "not_show_image_in_list";//首页列表不要显示图片
     public static final String tim_interval = "tim_interval";//后台请求间隔
     public static final String tim_is_open = "tim_is_open";//定时器是否已经开启
@@ -44,9 +40,6 @@ public class UserPreference extends LitePalSupport {
 
 
     public static final String  RSS_HUB =  "rsshub";
-    public static final String FIRST_USE_LOCAL_SEARCH_AND_FILTER = "FIRST_USE_LOCAL_SEARCH_AND_FILTER";//是否首次打开APP
-    public static final String FIRST_INTRO_MAIN_FEED_ITEM = "FIRST_INTRO_MAIN_FEED_ITEM";//首次介绍首页的feedItem功能，包括侧滑，等等
-    public static final String FIST_USE_NEW_COMER = "FIST_USE_NEW_COMER";//首次介绍首页的feedItem功能，包括侧滑，等等
     public static final String FIRST_INTRO_DISCOVER = "FIRST_INTRO_DISCOVER";//首次介绍发现市场的功能，包括手动订阅，添加订阅
     public static final String DEFAULT_RSSHUB = "跟随上一级设置";
 
@@ -184,27 +177,5 @@ public class UserPreference extends LitePalSupport {
             }
         });
     }
-
-
-    public static String getRssHubUrl(){
-
-        String url =  queryValueByKey(RSS_HUB, GlobalConfig.OfficialRSSHUB);
-        if (url.equals(OWN_RSSHUB)){//如果有自定义源则选择这个
-            url =  queryValueByKey(OWN_RSSHUB, GlobalConfig.OfficialRSSHUB);
-            //对自定义源的地址进行处理
-            if (!url.startsWith("http://") && !url.startsWith("https://")){
-                url = "http://" + url;
-            }
-            if (url.endsWith("/")){
-                url = url.substring(0,url.length()-1);
-            }
-            return url;
-        }else {
-            return url;
-        }
-    }
-
-
-
 
 }

@@ -8,21 +8,15 @@
         android:title="访问原文"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_star"
-        android:icon="@drawable/star_off_night"
-        android:orderInCategory="100"
-        android:title="收藏"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/action_share"
         android:icon="@drawable/ic_share_black_24dp_night"
         android:orderInCategory="100"
         android:title="分享"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/text_setting"
-        android:icon="@drawable/ic_text_fields_black_24dp_night"
+        android:icon="@drawable/ic_more_vert_black_24dp"
         android:orderInCategory="100"
         android:title="阅读设置"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
 </menu>
