@@ -284,8 +284,8 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
             feedItemList.get(i).setRead(true);
             feedItemList.get(i).save();
             notifyItemChanged(i);
-
         }
+        EventBus.getDefault().post(new EventMessage(EventMessage.MAIN_READ_NUM_EDIT));
     }
 
     private void markReadOfBottom(final BaseViewHolder helper, final FeedItem item){
@@ -294,6 +294,7 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
             feedItemList.get(i).save();
             notifyItemChanged(i);
         }
+        EventBus.getDefault().post(new EventMessage(EventMessage.MAIN_READ_NUM_EDIT));
     }
 
     public void setRequesting(boolean requesting) {
