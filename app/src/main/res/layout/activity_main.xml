@@ -84,12 +84,6 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <com.miguelcatalan.materialsearchview.MaterialSearchView
-            android:id="@+id/search_view"
-            android:layout_width="match_parent"
-            android:elevation="6dp"
-            android:layout_height="wrap_content" />
-
         <LinearLayout
             android:id="@+id/search_view_content"
             android:layout_width="match_parent"
