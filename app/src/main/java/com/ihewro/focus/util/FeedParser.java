@@ -1,5 +1,8 @@
 package com.ihewro.focus.util;
 
+import static com.ihewro.focus.util.AtomParser.FEED;
+import static com.ihewro.focus.util.AtomParser.readFeedForFeed;
+
 import android.util.Xml;
 
 import com.blankj.ALog;
@@ -11,7 +14,6 @@ import com.ihewro.focus.bean.UserPreference;
 
 import org.jsoup.Jsoup;
 import org.litepal.LitePal;
-import org.litepal.exceptions.LitePalSupportException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -20,15 +22,10 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import okhttp3.internal.Util;
 import retrofit2.Response;
-
-import static com.ihewro.focus.util.AtomParser.FEED;
-import static com.ihewro.focus.util.AtomParser.readFeedForFeed;
 
 /**
  * <pre>
@@ -64,7 +61,7 @@ public class FeedParser {
     /**
      * 从字符串解析出feed
      * @param xmlStr
-     * @return[
+     * @return
      */
     public static Feed parseStr2Feed(String xmlStr,String url) throws UnsupportedEncodingException {
         if (Strings.isNullOrEmpty(xmlStr)) {
@@ -352,59 +349,43 @@ public class FeedParser {
      * @return
      */
     public static Feed HandleFeed(int id,Response<String> response, Feed feed) throws IOException {
-        if (feed !=null){
-            int count = LitePal.where("feedid = ?", String.valueOf(id)).count(FeedItem.class);
-
-
+        if (feed != null) {
             //给feed下面所有feedItem设置feedName和feedId;
             //获取当前feed的iid
-            List<Feed> tempFeeds = LitePal.where("url = ?",feed.getUrl()).find(Feed.class);
+            List<Feed> tempFeeds = LitePal.where("url = ?", feed.getUrl()).find(Feed.class);
             int feedId = 0;
-            if (tempFeeds.size() <= 0){
-                ALog.d("出现未订阅错误"+feed.getUrl());//我们获取feedItem内容是从找数据库的feed，所以不可能feedItem中的feed url 不在数据库中欧冠
-            }else {
+            if (tempFeeds.size() <= 0) {
+                ALog.d("出现未订阅错误" + feed.getUrl());//我们获取feedItem内容是从找数据库的feed，所以不可能feedItem中的feed url 不在数据库中欧冠
+            } else {
                 feedId = tempFeeds.get(0).getId();
             }
             feed.setId(feedId);
-            if(UserPreference.queryValueByKey(UserPreference.AUTO_SET_FEED_NAME,"0").equals("0")){//没有选择，自动设置会手动设置name
+            if (UserPreference.queryValueByKey(UserPreference.AUTO_SET_FEED_NAME, "0").equals("0")) {//没有选择，自动设置会手动设置name
                 feed.setName(tempFeeds.get(0).getName());//因为在线请求的时候没有拉取Titile这个字段
             }
-            //        tempFeeds.get(0).setLink(feed.getLink());
-//        tempFeeds.get(0).setDesc(feed.getDesc());
-//        tempFeeds.get(0).save();
             feed.update(feedId);
-//        feed.save();//更新数据！
 
+            int count2 = 0; // 用于记录新插入的item数量
             //给feed下所有feedItem绑定feed信息
-            for (int i =0;i<feed.getFeedItemList().size();i++){
+            for (int i = 0; i < feed.getFeedItemList().size(); i++) {
                 feed.getFeedItemList().get(i).setFeedName(feed.getName());
                 feed.getFeedItemList().get(i).setFeedId(feedId);
 
-                try{
-                    feed.getFeedItemList().get(i).saveThrows();//当前feed存储数据库
-                }catch (LitePalSupportException exception){
-//                    ALog.d("数据重复不会插入");//当前feedItem 已经存在数据库中了
-                    //此时要对feedItem进行状态字段的恢复，读取数据的状态
-                    FeedItem temp = LitePal.where("url = ?",feed.getFeedItemList().get(i).getUrl()).limit(1).find(FeedItem.class).get(0);
-                    feed.getFeedItemList().get(i).setId(temp.getId());
-                    feed.getFeedItemList().get(i).setRead(temp.isRead());
-                    feed.getFeedItemList().get(i).setFavorite(temp.isFavorite());
-                    feed.getFeedItemList().get(i).setDate(temp.getDate());//有的feedItem 源地址中 没有时间，所以要恢复第一次加入数据库中的时间
+                // 先查询数据库中是否存在该item
+                List<FeedItem> existingItems = LitePal.where("url = ?", String.valueOf(feed.getFeedItemList().get(i).getUrl())).find(FeedItem.class);
 
-                    temp.setContent(feed.getFeedItemList().get(i).getContent());
-                    temp.setTitle(feed.getFeedItemList().get(i).getTitle());
-                    temp.setSummary(feed.getFeedItemList().get(i).getSummary());
-                    if(UserPreference.queryValueByKey(UserPreference.AUTO_SET_FEED_NAME,"0").equals("1")){//没有选择，自动设置会手动设置name
-                        temp.setFeedName(feed.getFeedItemList().get(i).getFeedName());
-                    }
-                    temp.save();
-
+                if (existingItems.isEmpty()) {
+                    // 如果不存在，则保存新item
+                    feed.getFeedItemList().get(i).save();
+                    count2++;
+                } else {
+                    // 如果存在，打印日志，输出item的标题
+                    ALog.d("item已存在：" + feed.getFeedItemList().get(i).getTitle());
                 }
             }
 
-            int count2 = LitePal.where("feedid = ?", String.valueOf(id)).count(FeedItem.class);
 //            ALog.d("请求前数目" + count + "请求后数目" + count2 + "时间");
-            FeedRequest feedRequire = new FeedRequest(feed.getId(),true,count2 - count,"",response.code(), DateUtil.getNowDateRFCInt());
+            FeedRequest feedRequire = new FeedRequest(feed.getId(), true, count2, "", response.code(), DateUtil.getNowDateRFCInt());
             feedRequire.save();
         }
 
