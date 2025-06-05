@@ -29,12 +29,6 @@ public class MJavascriptInterface {
     }
 
     @android.webkit.JavascriptInterface
-    public void openImage(String img) {
-        ALog.d("点击了图片" +img);
-        ImageLoaderManager.showSingleImageDialog(activity,img,null);
-    }
-
-    @android.webkit.JavascriptInterface
     public void longClickImage(String img) {
         ALog.d("长按图片" +img);
         //显示下拉底部弹窗
