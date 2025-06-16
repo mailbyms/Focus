@@ -61,6 +61,11 @@ public class WebViewUtil {
             element.attr("style","");
         }
 
+        // 移除所有超链接，但保留其中的文本内容
+        Elements links = doc.select("a");
+        for (Element link : links) {
+            link.replaceWith(new org.jsoup.nodes.TextNode(link.text(), ""));
+        }
 
         Elements spans = doc.select("span");
         for (Element element:spans){
