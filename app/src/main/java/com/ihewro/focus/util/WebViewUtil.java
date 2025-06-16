@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
@@ -102,7 +101,7 @@ public class WebViewUtil {
         webView.setWebViewClient(new MyWebViewClient(context,url));
 
 
-        webView.setLayerType(View.LAYER_TYPE_NONE,null);//关闭硬件加速
+        //webView.setLayerType(View.LAYER_TYPE_NONE,null);//关闭硬件加速
 //        webView.getSettings().setBlockNetworkImage(true);//一开始禁止图片加载
 
 
