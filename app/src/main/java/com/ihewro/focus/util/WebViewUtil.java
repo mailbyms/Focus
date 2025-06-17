@@ -60,12 +60,6 @@ public class WebViewUtil {
             element.attr("style","");
         }
 
-        // 移除所有超链接，但保留其中的文本内容
-        Elements links = doc.select("a");
-        for (Element link : links) {
-            link.replaceWith(new org.jsoup.nodes.TextNode(link.text(), ""));
-        }
-
         Elements spans = doc.select("span");
         for (Element element:spans){
             element.attr("style","");
@@ -83,6 +77,13 @@ public class WebViewUtil {
             element.attr("src","data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJsb2FkZXItMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSI0MHB4IiBoZWlnaHQ9IjQwcHgiIHZpZXdCb3g9IjAgMCA1MCA1MCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNTAgNTA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHBhdGggZmlsbD0iIzAwMCIgZD0iTTI1LjI1MSw2LjQ2MWMtMTAuMzE4LDAtMTguNjgzLDguMzY1LTE4LjY4MywxOC42ODNoNC4wNjhjMC04LjA3MSw2LjU0My0xNC42MTUsMTQuNjE1LTE0LjYxNVY2LjQ2MXoiIHRyYW5zZm9ybT0icm90YXRlKDU5LjM5MjggMjUgMjUpIj4KPGFuaW1hdGVUcmFuc2Zvcm0gYXR0cmlidXRlVHlwZT0ieG1sIiBhdHRyaWJ1dGVOYW1lPSJ0cmFuc2Zvcm0iIHR5cGU9InJvdGF0ZSIgZnJvbT0iMCAyNSAyNSIgdG89IjM2MCAyNSAyNSIgZHVyPSIwLjZzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPgo8L3BhdGg+Cjwvc3ZnPg==");
             element.attr("data",imgUrl);
         }
+
+        // 移除所有超链接，但保留其中的文本内容
+        Elements links = doc.select("a");
+        for (Element link : links) {
+            link.replaceWith(new org.jsoup.nodes.TextNode(link.text(), ""));
+        }
+
         html = doc.toString();
 
         WebSettings webSettings = webView.getSettings();
