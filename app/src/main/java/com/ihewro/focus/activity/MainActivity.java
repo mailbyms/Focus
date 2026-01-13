@@ -37,6 +37,7 @@ import com.ihewro.focus.fragemnt.search.SearchFeedItemListFragment;
 import com.ihewro.focus.fragemnt.search.SearchLocalFeedListFragment;
 import com.ihewro.focus.task.TimingService;
 import com.ihewro.focus.databinding.ActivityMainBinding;
+import com.ihewro.focus.util.StatusBarUtil;
 import com.ihewro.focus.util.UIUtil;
 import com.ihewro.focus.view.FeedFolderOperationPopupView;
 import com.ihewro.focus.view.FeedListShadowPopupView;
@@ -113,8 +114,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-
+        StatusBarUtil.setColor(this, getResources().getColor(R.color.colorPrimary), 0);
 
         binding.toolbar.inflateMenu(R.menu.main);
         binding.toolbar.inflateMenu(R.menu.main);

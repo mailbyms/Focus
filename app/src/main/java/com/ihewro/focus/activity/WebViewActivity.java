@@ -33,6 +33,7 @@ import com.google.common.io.ByteStreams;
 import com.ihewro.focus.R;
 import com.ihewro.focus.databinding.ActivityWebBinding;
 import com.ihewro.focus.util.MJavascriptInterface;
+import com.ihewro.focus.util.StatusBarUtil;
 import com.ihewro.focus.view.MyScrollView;
 import com.ihewro.focus.view.WebLayout;
 import com.just.agentweb.AgentWeb;
@@ -143,6 +144,7 @@ public class WebViewActivity extends BackActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityWebBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        StatusBarUtil.setColor(this, getResources().getColor(R.color.colorPrimary), 0);
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

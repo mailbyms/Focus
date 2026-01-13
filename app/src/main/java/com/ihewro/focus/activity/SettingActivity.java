@@ -15,6 +15,7 @@ import com.ihewro.focus.databinding.ActivitySettingBinding;
 import com.ihewro.focus.fragemnt.setting.DataFragment;
 import com.ihewro.focus.fragemnt.setting.DisplayFragment;
 import com.ihewro.focus.fragemnt.setting.SynchroFragment;
+import com.ihewro.focus.util.StatusBarUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class SettingActivity extends BackActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySettingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        StatusBarUtil.setColor(this, getResources().getColor(R.color.colorPrimary), 0);
 
         setSupportActionBar(binding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);

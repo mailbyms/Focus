@@ -23,6 +23,7 @@ import com.ihewro.focus.fragemnt.FeedFolderListManageFragment;
 import com.ihewro.focus.fragemnt.FeedListManageFragment;
 import com.ihewro.focus.util.OPMLCreateHelper;
 import com.ihewro.focus.util.OPMLReadHelper;
+import com.ihewro.focus.util.StatusBarUtil;
 import com.ihewro.focus.view.RequireListPopupView;
 import com.lxj.xpopup.XPopup;
 
@@ -63,6 +64,7 @@ public class FeedManageActivity extends BackActivity implements EasyPermissions.
         super.onCreate(savedInstanceState);
         binding = ActivityFeedManageBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        StatusBarUtil.setColor(this, getResources().getColor(R.color.colorPrimary), 0);
         EventBus.getDefault().register(this);
 
         setSupportActionBar(binding.toolbar);
