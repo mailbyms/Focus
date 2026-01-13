@@ -102,19 +102,6 @@ public class RequireListPopupView extends BottomPopupView {
         textInfo = findViewById(R.id.text_info);
         btnFinish = findViewById(R.id.btn_finish);
 
-        if (!help.isHelp()){
-            actionHelp.setVisibility(View.GONE);
-        }else {
-            actionHelp.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //打开帮助页面。是一个网页
-                    //webview的dialog
-                    int accentColor = ContextCompat.getColor(getContext(), R.color.accent);
-                    HelpDialog.create(false, accentColor, help.getContent()).show(fragmentManager, "changelog");
-                }
-            });
-        }
 
         listTitle.setText(title);
 

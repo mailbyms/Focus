@@ -15,9 +15,6 @@ import org.litepal.LitePal;
 import org.litepal.LitePalApplication;
 
 import es.dmoral.toasty.Toasty;
-import skin.support.SkinCompatManager;
-import skin.support.app.SkinCardViewInflater;
-import skin.support.design.app.SkinMaterialViewInflater;
 
 /**
  * <pre>
@@ -51,13 +48,6 @@ public class MyApplication extends LitePalApplication {
         Toasty.Config.getInstance()
                 .allowQueue(true)
                 .apply();
-
-        SkinCompatManager.withoutActivity(this)
-                .addInflater(new SkinMaterialViewInflater())
-                .addInflater(new SkinCardViewInflater())
-                .setSkinStatusBarColorEnable(true)
-                .setSkinWindowBackgroundEnable(true)
-                .loadSkin();
 
         UserPreference.initCacheMap();
     }

@@ -17,7 +17,6 @@ import org.litepal.crud.callback.FindMultiCallback;
 import java.util.Arrays;
 import java.util.List;
 
-import skin.support.utils.SkinPreference;
 
 /**
  * <pre>
@@ -89,21 +88,11 @@ public class FilterPopupView extends DrawerPopupView {
         initView();
 
         //初始化颜色
+        normalTextColor = getResources().getColor(R.color.colorAccent);
+        normalBGColor = getResources().getColor(R.color.material_drawer_selected);
 
-        if (SkinPreference.getInstance().getSkinName().equals("night")){
-            normalTextColor = getResources().getColor(R.color.material_drawer_dark_selected_text);
-            normalBGColor = getResources().getColor(R.color.material_drawer_dark_selected);
-
-            highlightTextColor = getResources().getColor(R.color.material_drawer_dark_primary_text);
-            highlightBGColor = getResources().getColor(R.color.material_drawer_dark_background);
-
-        }else {
-            normalTextColor = getResources().getColor(R.color.colorAccent);
-            normalBGColor = getResources().getColor(R.color.material_drawer_selected);
-
-            highlightTextColor = getResources().getColor(R.color.material_drawer_primary_text);
-            highlightBGColor = getResources().getColor(R.color.material_drawer_background);
-        }
+        highlightTextColor = getResources().getColor(R.color.material_drawer_primary_text);
+        highlightBGColor = getResources().getColor(R.color.material_drawer_background);
 
         //初始化选项
         //获取用户设置中的位置

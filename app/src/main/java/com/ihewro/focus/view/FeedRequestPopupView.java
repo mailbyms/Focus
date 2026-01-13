@@ -131,16 +131,6 @@ public class FeedRequestPopupView extends BottomPopupView{
         recyclerView = findViewById(R.id.recycler_view);
         textInfo = findViewById(R.id.subtitle);
 
-        if (!help.isHelp()){
-            actionHelp.setVisibility(View.GONE);
-        }else {
-            actionHelp.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //打开帮助页面。是一个网页
-                }
-            });
-        }
 
         listTitle.setText(title);
 

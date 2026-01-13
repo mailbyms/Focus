@@ -69,8 +69,6 @@ import java.util.Objects;
 
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.PermissionRequest;
-import skin.support.SkinCompatManager;
-import skin.support.utils.SkinPreference;
 
 
 public class MainActivity extends BaseActivity {
@@ -118,11 +116,11 @@ public class MainActivity extends BaseActivity {
 
 
 
-        if (SkinPreference.getInstance().getSkinName().equals("night")) {
-            binding.toolbar.inflateMenu(R.menu.main_night);
-        } else {
-            binding.toolbar.inflateMenu(R.menu.main);
-        }
+        binding.toolbar.inflateMenu(R.menu.main);
+        binding.toolbar.inflateMenu(R.menu.main);
+        binding.toolbar.inflateMenu(R.menu.main);
+        binding.toolbar.inflateMenu(R.menu.main);
+        binding.toolbar.inflateMenu(R.menu.main);
 
         if (getIntent() != null){
             boolean flag = getIntent().getBooleanExtra(GlobalConfig.is_need_update_main,false);
@@ -379,12 +377,7 @@ public class MainActivity extends BaseActivity {
         // Create a few sample profile
         final IProfile profile = new ProfileDrawerItem().withName("本地RSS").withEmail("数据备份在本地");
 
-        int color;
-        if(SkinPreference.getInstance().getSkinName().equals("night")){
-            color = R.color.material_drawer_dark_secondary_text;
-        }else {
-            color = R.color.material_drawer_secondary_text;
-        }
+        int color = R.color.material_drawer_secondary_text;
         // Create the AccountHeader
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -434,40 +427,6 @@ public class MainActivity extends BaseActivity {
 
 
 
-        //初始化顶部的内容包括颜色
-        boolean flag = false;
-        if (SkinPreference.getInstance().getSkinName().equals("night")) {
-            flag = true;
-            ((TextView)(drawer.getStickyFooter().findViewById(R.id.mode_text))).setText("日间");
-        }else {
-            ((TextView)(drawer.getStickyFooter().findViewById(R.id.mode_text))).setText("夜间");
-        }
-
-        final boolean finalFlag = flag;
-        drawer.getStickyFooter().findViewById(R.id.mode).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stopService(new Intent(MainActivity.this, TimingService.class));
-
-                if (!finalFlag) {//flag true 表示夜间模式
-                    SkinCompatManager.getInstance().loadSkin("night", null, SkinCompatManager.SKIN_LOADER_STRATEGY_BUILD_IN);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            recreate();
-                        }
-                    }, 200); // 延时1�?
-                } else {
-                    SkinCompatManager.getInstance().restoreDefaultTheme();
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            recreate();
-                        }
-                    }, 200); // 延时1�?
-                }
-            }
-        });
 
 
         drawer.getStickyFooter().findViewById(R.id.manage).setOnClickListener(new View.OnClickListener() {
@@ -701,12 +660,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (SkinPreference.getInstance().getSkinName().equals("night")) {
-            getMenuInflater().inflate(R.menu.main_night, menu);
-        } else {
-            getMenuInflater().inflate(R.menu.main, menu);
-        }
-
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 

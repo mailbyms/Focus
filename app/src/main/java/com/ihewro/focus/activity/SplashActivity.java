@@ -13,7 +13,6 @@ import com.ihewro.focus.R;
 import com.ihewro.focus.task.AppStartTask;
 import com.ihewro.focus.task.listener.TaskListener;
 
-import skin.support.utils.SkinPreference;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -21,11 +20,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(SkinPreference.getInstance().getSkinName().equals("night")){
-            super.setTheme(R.style.AppTheme_Dark);
-        }else {
-            super.setTheme(R.style.AppTheme);
-        }
+        super.setTheme(R.style.AppTheme);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
 

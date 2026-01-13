@@ -52,7 +52,6 @@ android {
         }
     }
 
-    sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res-night'] } }
 
     splits {
         abi {
@@ -165,11 +164,6 @@ dependencies {
     // 弹窗
     implementation 'com.github.li-xiaojun:XPopup:2.9.0'
 
-    // 多主题
-    implementation 'skin.support:skin-support:4.0.5'
-    implementation 'skin.support:skin-support-appcompat:4.0.5'
-    implementation 'skin.support:skin-support-design:4.0.5'
-    implementation 'skin.support:skin-support-cardview:4.0.5'
 
     // 权限请求
     implementation 'pub.devrel:easypermissions:2.0.1'

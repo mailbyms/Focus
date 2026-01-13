@@ -34,7 +34,6 @@ import org.litepal.crud.callback.SaveCallback;
 import java.util.ArrayList;
 import java.util.List;
 
-import skin.support.utils.SkinPreference;
 
 /**
  * <pre>
@@ -90,20 +89,11 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
 
 
         //初始化颜色参数
-        if(SkinPreference.getInstance().getSkinName().equals("night")){
-            read_color = R.color.text_read_night;
-            read_content_color = R.color.text_read_content_night;
+        read_color = R.color.text_read;
+        read_content_color = R.color.text_read_content;
 
-            not_read_color = R.color.text_unread_night;
-            not_read_content_color = R.color.text_unread_content_night;
-
-        }else {
-            read_color = R.color.text_read;
-            read_content_color = R.color.text_read_content;
-
-            not_read_color = R.color.text_unread;
-            not_read_content_color = R.color.text_unread_content;
-        }
+        not_read_color = R.color.text_unread;
+        not_read_content_color = R.color.text_unread_content;
     }
 
     public void setNewDataByDiff(@Nullable List<FeedItem> data,int notReadNum) {

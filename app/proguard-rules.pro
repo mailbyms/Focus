@@ -78,9 +78,6 @@
 # Recovery
 -keep class com.zxy.android.recovery.** { *; }
 
-# Skin-support
--keep class skin.support.** { *; }
--dontwarn skin.support.**
 
 # Toasty
 -dontwarn com.github.grenderg.**

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import skin.support.utils.SkinPreference;
 
 public class SettingActivity extends BackActivity {
 
@@ -69,12 +68,8 @@ public class SettingActivity extends BackActivity {
         //新建适配器
         BaseViewPagerAdapter adapter = new BaseViewPagerAdapter(getSupportFragmentManager(), fragmentList, pageTitleList);
 
-        //适配夜间模式
-        if (SkinPreference.getInstance().getSkinName().equals("night")) {
-            binding.tabLayout.setBackgroundColor(ContextCompat.getColor(SettingActivity.this,R.color.colorPrimary_night));
-        } else {
-            binding.tabLayout.setBackgroundColor(ContextCompat.getColor(SettingActivity.this,R.color.colorPrimary));
-        }
+        //设置背景颜色
+        binding.tabLayout.setBackgroundColor(ContextCompat.getColor(SettingActivity.this,R.color.colorPrimary));
 
         //设置ViewPager
         binding.viewPager.setAdapter(adapter);

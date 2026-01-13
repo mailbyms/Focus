@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import es.dmoral.toasty.Toasty;
-import skin.support.utils.SkinPreference;
 
 
 public class PostDetailActivity extends BackActivity {
@@ -145,10 +144,8 @@ public class PostDetailActivity extends BackActivity {
 
     private void initToolbarColor() {
         //根据偏好设置背景颜色修改toolbar的背景颜色
-        if (!SkinPreference.getInstance().getSkinName().equals("night")) {
-            binding.toolbar.setBackgroundColor(PostSetting.getBackgroundInt(PostDetailActivity.this));
-            StatusBarUtil.setColor(this, PostSetting.getBackgroundInt(PostDetailActivity.this), 0);
-        }
+        binding.toolbar.setBackgroundColor(PostSetting.getBackgroundInt(PostDetailActivity.this));
+        StatusBarUtil.setColor(this, PostSetting.getBackgroundInt(PostDetailActivity.this), 0);
     }
 
 
@@ -274,11 +271,7 @@ public class PostDetailActivity extends BackActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         binding.toolbar.setTitle("");
-        if (SkinPreference.getInstance().getSkinName().equals("night")) {
-            getMenuInflater().inflate(R.menu.post_night, menu);
-        } else {
-            getMenuInflater().inflate(R.menu.post, menu);
-        }
+        getMenuInflater().inflate(R.menu.post, menu);
 
         initToolbarColor();
 

@@ -107,12 +107,12 @@ public class OperationBottomPopupView  extends BottomPopupView {
             tvSubTitle.setVisibility(View.GONE);
         }
 
-        if (!help.isHelp()){
-            actionHelp.setVisibility(View.GONE);
-        }else {
-            actionHelp.setVisibility(View.VISIBLE);
-            //点击事件，这个地方功能扩展
-        }
+        actionHelp.setVisibility(View.GONE);
+        actionHelp.setVisibility(View.GONE);
+        actionHelp.setVisibility(View.GONE);
+        actionHelp.setVisibility(View.GONE);
+        actionHelp.setVisibility(View.GONE);
+        actionHelp.setVisibility(View.GONE);
 
     }
 

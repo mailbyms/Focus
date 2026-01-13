@@ -23,7 +23,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import skin.support.utils.SkinPreference;
+
 
 /**
  * <pre>
@@ -112,9 +112,6 @@ public class WebViewUtil {
         String js = "<script src=\"https://focus.com/content.js\"></script>";
 //        String meta = '<meta name="referrer" content="no-referrer" />';
         String mclass = "";
-        if(SkinPreference.getInstance().getSkinName().equals("night")){
-            mclass = "entry-dark";
-        }
 
         //根据配置加载字体、间距的css
         String fontSize = "font-size:"+ PostSetting.getFontSize() + "px;";
@@ -122,11 +119,7 @@ public class WebViewUtil {
         String fontSpace = "letter-spacing:" + PostSetting.getFontSpace() + "px;";
 
 
-        String backgroundCss = "";
-
-        if (!SkinPreference.getInstance().getSkinName().equals("night")) {//夜间模式的背景颜色设置无效
-            backgroundCss = "background:" + PostSetting.getBackground(context);
-        }
+        String backgroundCss = "background:" + PostSetting.getBackground(context);
 
         String settingCss = "<style>.entry{"+fontSize+lineSpace+fontSpace+backgroundCss+"}</style>\n";
 

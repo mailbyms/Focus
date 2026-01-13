@@ -21,18 +21,6 @@
 
 
 
-    <!--再写一个是为了左侧边栏-->
-    <style name="AppTheme.Dark" parent="MaterialDrawerTheme">
-        <item name="colorPrimary">@color/colorPrimary_night</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark_night</item>
-        <item name="colorAccent">@color/colorAccent_night</item>
-        <item name="android:windowBackground">@color/colorPrimary_night</item>
-        <item name="popupMenuStyle">@style/ThemeOverlay.AppCompat.Dark</item>
-
-        <!--<item name="android:windowIsTranslucent">true</item>-->
-        <!--<item name="android:windowNoTitle">true</item>-->
-
-    </style>
 
 
 

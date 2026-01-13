@@ -16,7 +16,6 @@ import com.ihewro.focus.bean.PostSetting;
 import com.ihewro.focus.util.DateUtil;
 import com.ihewro.focus.util.PostUtil;
 
-import skin.support.utils.SkinPreference;
 
 /**
  * <pre>

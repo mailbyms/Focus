@@ -7,8 +7,6 @@ import com.ihewro.focus.R;
 import com.ihewro.focus.util.StatusBarUtil;
 import com.saber.chentianslideback.SlideBackActivity;
 
-import skin.support.utils.SkinPreference;
-
 /**
  * <pre>
  *     author : hewro
@@ -24,18 +22,10 @@ public class BackActivity extends SlideBackActivity {
 
     @Override
     public void setContentView(int layoutResID) {
-        if(SkinPreference.getInstance().getSkinName().equals("night")){
-            setTheme(R.style.AppTheme_Dark);
-        }else {
-            setTheme(R.style.AppTheme);
-        }
+        setTheme(R.style.AppTheme);
         super.setContentView(layoutResID);
         setSlideBackDirection(SlideBackActivity.LEFT);
-
-        if(!SkinPreference.getInstance().getSkinName().equals("night")){
-//            StatusBarUtil.setLightMode(this);
-            StatusBarUtil.setColor(this, getResources().getColor(R.color.colorPrimary),0);
-        }
+        StatusBarUtil.setColor(this, getResources().getColor(R.color.colorPrimary), 0);
     }
 
 

@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import es.dmoral.toasty.Toasty;
-import skin.support.utils.SkinPreference;
 
 /**
  * <pre>
@@ -62,11 +61,8 @@ public class PostDetailListAdapter extends BaseQuickAdapter<FeedItem, BaseViewHo
     protected void convert(BaseViewHolder helper, final FeedItem item) {
 
         //根据偏好设置的背景颜色，设置标题栏位置的背景颜色
-        if (!SkinPreference.getInstance().getSkinName().equals("night")){
-//            helper.setBackgroundColor(R.id.container, PostSetting.getBackgroundInt(context));
-            helper.setBackgroundColor(R.id.post_title, PostSetting.getBackgroundInt(context));
-            helper.setBackgroundColor(R.id.post_turn, PostSetting.getBackgroundInt(context));
-        }
+        helper.setBackgroundColor(R.id.post_title, PostSetting.getBackgroundInt(context));
+        helper.setBackgroundColor(R.id.post_turn, PostSetting.getBackgroundInt(context));
 
         scrollView = helper.getView(R.id.post_turn);
         //设置文章内容

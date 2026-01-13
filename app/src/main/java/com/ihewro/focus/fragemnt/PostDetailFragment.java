@@ -34,7 +34,6 @@ import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import java.util.regex.Pattern;
 
 import es.dmoral.toasty.Toasty;
-import skin.support.utils.SkinPreference;
 
 /**
  * 文章详情页面的碎片
@@ -89,11 +88,8 @@ public class PostDetailFragment extends Fragment {
         };
 
         //根据偏好设置的背景颜色，设置标题栏位置的背景颜色
-        if (!SkinPreference.getInstance().getSkinName().equals("night")){
-//            helper.setBackgroundColor(R.id.container, PostSetting.getBackgroundInt(context));
-            binding.postTitle.setBackgroundColor(PostSetting.getBackgroundInt(getContext()));
-            binding.postTurn.setBackgroundColor(PostSetting.getBackgroundInt(getContext()));
-        }
+        binding.postTitle.setBackgroundColor(PostSetting.getBackgroundInt(getContext()));
+        binding.postTurn.setBackgroundColor(PostSetting.getBackgroundInt(getContext()));
 
         //设置文章内容
         PostUtil.setContent(getContext(), feedItem, binding.postContent,null);
