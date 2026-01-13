@@ -5,6 +5,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!-- Drawer 选中状态文字颜色 -->
+        <item name="material_drawer_selected_text">@color/text_secondary_dark</item>
         <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="popupMenuStyle">@style/ThemeOverlay.AppCompat.Light</item>
 

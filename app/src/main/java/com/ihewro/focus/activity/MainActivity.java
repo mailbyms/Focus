@@ -613,7 +613,7 @@ public class MainActivity extends BaseActivity {
 
                 notReadNum += current_notReadNum;
             }
-            ExpandableBadgeDrawerItem one = new ExpandableBadgeDrawerItem().withName(feedFolderList.get(i).getName()).withSelectable(true).withIdentifier(feedFolderList.get(i).getId()+FEED_FOLDER_IDENTIFY_PLUS).withTag(DRAWER_FOLDER).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.md_red_700)).withSubItems(
+            ExpandableBadgeDrawerItem one = new ExpandableBadgeDrawerItem().withName(feedFolderList.get(i).getName()).withSelectable(true).withIdentifier(feedFolderList.get(i).getId()+FEED_FOLDER_IDENTIFY_PLUS).withTag(DRAWER_FOLDER).withTextColorRes(R.color.text_secondary_dark).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.md_red_700)).withSubItems(
                     feedItems
             );
 
