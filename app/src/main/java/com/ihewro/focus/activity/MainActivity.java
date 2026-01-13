@@ -425,6 +425,14 @@ public class MainActivity extends BaseActivity {
                 .withStickyFooterShadow(false)
                 .build();
 
+        // 设置自定义汉堡菜单图标（替换 MaterialDrawer 默认图标）
+        binding.toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
+        binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer.openDrawer();
+            }
+        });
 
 
 
