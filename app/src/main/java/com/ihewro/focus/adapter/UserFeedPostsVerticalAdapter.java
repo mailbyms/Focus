@@ -1,9 +1,9 @@
 package com.ihewro.focus.adapter;
 
 import android.app.Activity;
-import android.support.annotation.Nullable;
-import android.support.v7.recyclerview.extensions.AsyncListDiffer;
-import android.support.v7.util.DiffUtil;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.AsyncListDiffer;
+import androidx.recyclerview.widget.DiffUtil;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,7 +27,6 @@ import com.ihewro.focus.util.RSSUtil;
 import com.ihewro.focus.util.StringUtil;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.greenrobot.eventbus.EventBus;
 import org.litepal.crud.callback.SaveCallback;
@@ -163,7 +162,7 @@ public class UserFeedPostsVerticalAdapter extends BaseItemDraggableAdapter<FeedI
 
                 helper.getView(R.id.post_pic).setVisibility(View.VISIBLE);
 
-                ImageLoader.getInstance().displayImage(StringUtil.trim(imageUrl), (ImageView) helper.getView(R.id.post_pic),ImageLoaderManager.getSubsciptionIconOptions(activity));
+                ImageLoaderManager.loadFeedIcon(activity, StringUtil.trim(imageUrl), (ImageView) helper.getView(R.id.post_pic));
 
             }else {
                 helper.getView(R.id.post_pic).setVisibility(View.GONE);

@@ -3,7 +3,7 @@ package com.ihewro.focus.task;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.ihewro.focus.bean.CollectionFolder;
 import com.ihewro.focus.fragemnt.CollectionListFragment;

@@ -2,9 +2,9 @@ package com.ihewro.focus.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -25,7 +25,6 @@ import com.ihewro.focus.util.StringUtil;
 import com.ihewro.focus.util.UIUtil;
 import com.ihewro.focus.view.RequireListPopupView;
 import com.lxj.xpopup.XPopup;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +63,7 @@ public class FeedListAdapter extends BaseQuickAdapter<Feed, BaseViewHolder> {
         helper.setText(R.id.name,item.getName());
         helper.setText(R.id.desc,item.getDesc());
         if (!StringUtil.trim(item.getIcon()).equals("")){//显示图标
-            ImageLoader.getInstance().displayImage(StringUtil.trim(String.valueOf(item.getIcon())), (ImageView) helper.getView(R.id.account_avatar),ImageLoaderManager.getSubsciptionIconOptions(activity));
+            ImageLoaderManager.loadFeedIcon(activity, StringUtil.trim(String.valueOf(item.getIcon())), (ImageView) helper.getView(R.id.account_avatar));
         }else {
             helper.setImageResource(R.id.account_avatar,R.drawable.ic_rss_feed_grey_24dp);
         }

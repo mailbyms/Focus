@@ -4,10 +4,10 @@ package com.ihewro.focus.fragemnt.search;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,22 +20,18 @@ import com.ihewro.focus.adapter.FeedListAdapter;
 import com.ihewro.focus.adapter.FeedSearchAdapter;
 import com.ihewro.focus.bean.Feed;
 import com.ihewro.focus.bean.FeedItem;
+import com.ihewro.focus.databinding.FragmentSearchBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SearchFeedItemListFragment extends Fragment {
 
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-    Unbinder unbinder;
+    private FragmentSearchBinding binding;
     private FeedSearchAdapter adapter;
     private List<FeedItem> searchResults = new ArrayList<>();
     private Activity activity;
@@ -51,9 +47,8 @@ public class SearchFeedItemListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
+        binding = FragmentSearchBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
 
@@ -71,10 +66,10 @@ public class SearchFeedItemListFragment extends Fragment {
      */
     private void initSearchAdapter() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        binding.recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new FeedSearchAdapter(searchResults);
-        adapter.bindToRecyclerView(recyclerView);
-        adapter.setEmptyView(R.layout.simple_empty_view,recyclerView);
+        adapter.bindToRecyclerView(binding.recyclerView);
+        adapter.setEmptyView(R.layout.simple_empty_view,binding.recyclerView);
 
 
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -93,7 +88,7 @@ public class SearchFeedItemListFragment extends Fragment {
 
     public void showLoading(){
         adapter.setNewData(null);
-        adapter.setEmptyView(R.layout.simple_loading_view,recyclerView);
+        adapter.setEmptyView(R.layout.simple_loading_view,binding.recyclerView);
     }
 
     public void updateData(List<FeedItem> list){
@@ -103,7 +98,7 @@ public class SearchFeedItemListFragment extends Fragment {
                 adapter.setNewData(searchResults);
             }else {
                 adapter.setNewData(null);
-                adapter.setEmptyView(R.layout.simple_empty_view,recyclerView);
+                adapter.setEmptyView(R.layout.simple_empty_view,binding.recyclerView);
             }
         }
     }
@@ -115,6 +110,6 @@ public class SearchFeedItemListFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        binding = null;
     }
 }

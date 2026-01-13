@@ -1,26 +1,21 @@
 package com.ihewro.focus.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.Button;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.ihewro.focus.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.ihewro.focus.databinding.ActivityErrorBinding;
 
 public class ErrorActivity extends AppCompatActivity {
 
-    @BindView(R.id.restart)
-    Button restart;
+    private ActivityErrorBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_error);
-        ButterKnife.bind(this);
+        binding = ActivityErrorBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        /*restart.setOnClickListener(new View.OnClickListener() {
+        /*binding.restart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //重新启动
@@ -31,4 +26,9 @@ public class ErrorActivity extends AppCompatActivity {
         });*/
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
+    }
 }

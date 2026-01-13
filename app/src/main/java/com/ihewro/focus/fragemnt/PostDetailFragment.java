@@ -3,10 +3,10 @@ package com.ihewro.focus.fragemnt;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.core.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.blankj.ALog;
 import com.ihewro.focus.R;
 import com.ihewro.focus.bean.Feed;
+import com.ihewro.focus.databinding.FragmentPostDetailBinding;
 import com.ihewro.focus.bean.FeedItem;
 import com.ihewro.focus.bean.PostSetting;
 import com.ihewro.focus.bean.UserPreference;
@@ -26,15 +27,12 @@ import com.ihewro.focus.util.WebViewUtil;
 import com.ihewro.focus.view.MyScrollView;
 import com.ihewro.focus.view.PostFooter;
 import com.ihewro.focus.view.PostHeader;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 
 import java.util.regex.Pattern;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
 import skin.support.utils.SkinPreference;
 
@@ -43,22 +41,7 @@ import skin.support.utils.SkinPreference;
  */
 public class PostDetailFragment extends Fragment {
 
-
-    @BindView(R.id.post_time)
-    TextView postTime;
-    @BindView(R.id.post_title)
-    TextView postTitle;
-    @BindView(R.id.feed_name)
-    TextView feedName;
-    @BindView(R.id.post_content)
-    WebView postContent;
-    @BindView(R.id.post_turn)
-    NestedScrollView postTurn;
-    @BindView(R.id.refreshLayout)
-    SmartRefreshLayout refreshLayout;
-    Unbinder unbinder;
-    private View view;
-
+    private FragmentPostDetailBinding binding;
     private int[] layers;
 
     public PostDetailFragment() {
@@ -86,10 +69,8 @@ public class PostDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_post_detail, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
+        binding = FragmentPostDetailBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
 
@@ -110,19 +91,19 @@ public class PostDetailFragment extends Fragment {
         //根据偏好设置的背景颜色，设置标题栏位置的背景颜色
         if (!SkinPreference.getInstance().getSkinName().equals("night")){
 //            helper.setBackgroundColor(R.id.container, PostSetting.getBackgroundInt(context));
-            postTitle.setBackgroundColor(PostSetting.getBackgroundInt(getContext()));
-            postTurn.setBackgroundColor(PostSetting.getBackgroundInt(getContext()));
+            binding.postTitle.setBackgroundColor(PostSetting.getBackgroundInt(getContext()));
+            binding.postTurn.setBackgroundColor(PostSetting.getBackgroundInt(getContext()));
         }
 
         //设置文章内容
-        PostUtil.setContent(getContext(), feedItem, postContent,null);
-        postTitle.setText(feedItem.getTitle());
-        postTime.setText( DateUtil.getMTimeStringByInt(feedItem.getDate()));
-        feedName.setText( feedItem.getFeedName());
+        PostUtil.setContent(getContext(), feedItem, binding.postContent,null);
+        binding.postTitle.setText(feedItem.getTitle());
+        binding.postTime.setText( DateUtil.getMTimeStringByInt(feedItem.getDate()));
+        binding.feedName.setText( feedItem.getFeedName());
 
         if (!feedItem.isRead()) {
             //如果这个文章没有阅读过则滚动到顶部
-            postTurn.fullScroll(ScrollView.FOCUS_UP);
+            binding.postTurn.fullScroll(ScrollView.FOCUS_UP);
         }
 
 
@@ -131,19 +112,19 @@ public class PostDetailFragment extends Fragment {
 
 
     private void initListener(){
-        refreshLayout.setRefreshHeader(new PostHeader(getContext(), feedItem));
-        refreshLayout.setRefreshFooter(new PostFooter(getContext(), feedItem));
+        binding.refreshLayout.setRefreshHeader(new PostHeader(getContext(), feedItem));
+        binding.refreshLayout.setRefreshFooter(new PostFooter(getContext(), feedItem));
         //使上拉加载具有弹性效果
-        refreshLayout.setEnableAutoLoadMore(false);
+        binding.refreshLayout.setEnableAutoLoadMore(false);
         //禁止越界拖动（1.0.4以上版本）
-        refreshLayout.setEnableOverScrollDrag(false);
+        binding.refreshLayout.setEnableOverScrollDrag(false);
         //关闭越界回弹功能
-        refreshLayout.setEnableOverScrollBounce(false);
+        binding.refreshLayout.setEnableOverScrollBounce(false);
         // 这个功能是本刷新库的特色功能：在列表滚动到底部时自动加载更多。 如果不想要这个功能，是可以关闭的：
-        refreshLayout.setEnableAutoLoadMore(false);
+        binding.refreshLayout.setEnableAutoLoadMore(false);
 
-        refreshLayout.setEnableRefresh(false);//禁止下拉动作
-        refreshLayout.setEnableLoadMore(false);//禁止上拉动作
+        binding.refreshLayout.setEnableRefresh(false);//禁止下拉动作
+        binding.refreshLayout.setEnableLoadMore(false);//禁止上拉动作
     }
 
     private void openLink() {
@@ -164,8 +145,8 @@ public class PostDetailFragment extends Fragment {
         }
     }
     public View findViewById(int id){
-        if (view!=null){
-            return view.findViewById(id);
+        if (binding!=null){
+            return binding.getRoot().findViewById(id);
         }else {
             return null ;
         }
@@ -175,7 +156,7 @@ public class PostDetailFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        binding = null;
     }
 
     public void refreshUI() {

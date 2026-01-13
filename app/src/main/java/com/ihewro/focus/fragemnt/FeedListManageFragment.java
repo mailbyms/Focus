@@ -2,11 +2,11 @@ package com.ihewro.focus.fragemnt;
 
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +16,7 @@ import com.chad.library.adapter.base.callback.ItemDragAndSwipeCallback;
 import com.chad.library.adapter.base.listener.OnItemDragListener;
 import com.ihewro.focus.R;
 import com.ihewro.focus.adapter.FeedFolderListAdapter;
+import com.ihewro.focus.databinding.FragmentFeedListManageBinding;
 import com.ihewro.focus.adapter.FeedListManageAdapter;
 import com.ihewro.focus.bean.EventMessage;
 import com.ihewro.focus.bean.Feed;
@@ -30,9 +31,6 @@ import org.litepal.LitePal;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,10 +38,7 @@ import butterknife.Unbinder;
 public class FeedListManageFragment extends Fragment {
 
     private static final String FEED_FOLDER_ID = "FEED_FOLDER_ID";
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-    Unbinder unbinder;
-
+    private FragmentFeedListManageBinding binding;
 
     private FeedListManageAdapter adapter;
     private List<Feed> feedList = new ArrayList<>();
@@ -78,10 +73,9 @@ public class FeedListManageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_feed_list_manage, container, false);
-        unbinder = ButterKnife.bind(this, view);
+        binding = FragmentFeedListManageBinding.inflate(inflater, container, false);
         EventBus.getDefault().register(this);
-        return view;
+        return binding.getRoot();
     }
 
     @Override
@@ -131,14 +125,14 @@ public class FeedListManageFragment extends Fragment {
         // 开启拖拽
         ItemDragAndSwipeCallback itemDragAndSwipeCallback = new ItemDragAndSwipeCallback(adapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemDragAndSwipeCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView);
         adapter.enableDragItem(itemTouchHelper, R.id.move_logo, true);
         adapter.setOnItemDragListener(onItemDragListener);
     }
 
     private void setRecyclerView(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(linearLayoutManager);
+        binding.recyclerView.setLayoutManager(linearLayoutManager);
 
         feedList = LitePal.where("feedfolderid = ?", String.valueOf(mFeedFolderId)).find(Feed.class);
 
@@ -156,10 +150,10 @@ public class FeedListManageFragment extends Fragment {
         }
 
         adapter = new FeedListManageAdapter(feedList,getActivity());
-        adapter.bindToRecyclerView(recyclerView);
+        adapter.bindToRecyclerView(binding.recyclerView);
 
         if (feedList.size()==0){
-            adapter.setEmptyView(R.layout.simple_empty_view,recyclerView);
+            adapter.setEmptyView(R.layout.simple_empty_view,binding.recyclerView);
         }
     }
 
@@ -174,7 +168,7 @@ public class FeedListManageFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        binding = null;
     }
 
     public void updateData(int id) {

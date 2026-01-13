@@ -5,7 +5,6 @@ import android.database.Cursor;
 import com.google.common.base.Strings;
 import com.ihewro.focus.bean.Collection;
 import com.ihewro.focus.bean.FeedItem;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

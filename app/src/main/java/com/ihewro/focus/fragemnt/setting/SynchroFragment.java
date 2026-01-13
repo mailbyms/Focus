@@ -1,8 +1,8 @@
 package com.ihewro.focus.fragemnt.setting;
 
 
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.SwitchPreferenceCompat;
+import androidx.preference.Preference;
+import androidx.preference.SwitchPreferenceCompat;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;

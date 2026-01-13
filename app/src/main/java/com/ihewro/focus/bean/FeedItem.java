@@ -1,7 +1,7 @@
 package com.ihewro.focus.bean;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.ihewro.focus.callback.UICallback;
 import com.ihewro.focus.decoration.ISuspensionInterface;
@@ -188,7 +188,7 @@ public class FeedItem extends LitePalSupport implements ISuspensionInterface, Se
     }
 
     @Override
-    public boolean equals(@android.support.annotation.Nullable Object obj) {
+    public boolean equals(@androidx.annotation.Nullable Object obj) {
         FeedItem feedItem = ((FeedItem)obj);
         assert feedItem != null;
         if (this.url.equals(feedItem.getUrl())){

@@ -11,12 +11,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.blankj.ALog;
 import com.ihewro.focus.R;
 import com.ihewro.focus.adapter.UserFeedPostsVerticalAdapter;
+import com.ihewro.focus.databinding.FragmentUserFeedUpdateContentBinding;
 import com.ihewro.focus.bean.EventMessage;
 import com.ihewro.focus.bean.Feed;
 import com.ihewro.focus.bean.FeedItem;
@@ -34,9 +35,10 @@ import com.ihewro.focus.helper.MyLinearLayoutManager;
 import com.ihewro.focus.helper.SimpleItemTouchHelperCallback;
 import com.ihewro.focus.task.RequestFeedListDataService;
 import com.ihewro.focus.util.UIUtil;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.header.MaterialHeader;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -47,25 +49,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import es.dmoral.toasty.Toasty;
 
 /**
  * 用户的最新订阅信息文章列表的碎片
  */
 public class UserFeedUpdateContentFragment extends Fragment {
-    @BindView(R.id.refreshLayout)
-    SmartRefreshLayout refreshLayout;
+    private FragmentUserFeedUpdateContentBinding binding;
     private SuspensionDecoration mDecoration;
     List<FeedItem> eList = new ArrayList<FeedItem>();
     public static final String FEED_LIST_ID = "FEED_LIST_ID";
 
     UserFeedPostsVerticalAdapter adapter;
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-    Unbinder unbinder;
 
     private ItemTouchHelper mItemTouchHelper;
 
@@ -119,9 +114,8 @@ public class UserFeedUpdateContentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user_feed_update_content, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
+        binding = FragmentUserFeedUpdateContentBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -129,17 +123,19 @@ public class UserFeedUpdateContentFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         initEmptyView();
 
+        // 设置默认的 RefreshHeader
+        binding.refreshLayout.setRefreshHeader(new MaterialHeader(getActivity()));
         bindListener();
-        refreshLayout.autoRefresh();
-        refreshLayout.setEnableLoadMore(false);//禁止加载更多
+        binding.refreshLayout.autoRefresh();
+        binding.refreshLayout.setEnableLoadMore(false);//禁止加载更多
         //使上拉加载具有弹性效果
-        refreshLayout.setEnableAutoLoadMore(false);
+        binding.refreshLayout.setEnableAutoLoadMore(false);
         //禁止越界拖动（1.0.4以上版本）
-        refreshLayout.setEnableOverScrollDrag(false);
+        binding.refreshLayout.setEnableOverScrollDrag(false);
         //关闭越界回弹功能
-        refreshLayout.setEnableOverScrollBounce(false);
+        binding.refreshLayout.setEnableOverScrollBounce(false);
         // 这个功能是本刷新库的特色功能：在列表滚动到底部时自动加载更多。 如果不想要这个功能，是可以关闭的：
-        refreshLayout.setEnableAutoLoadMore(false);
+        binding.refreshLayout.setEnableAutoLoadMore(false);
 
     }
 
@@ -147,20 +143,20 @@ public class UserFeedUpdateContentFragment extends Fragment {
     public void initEmptyView() {
         //初始化列表
         MyLinearLayoutManager linearLayoutManager = new MyLinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
+        binding.recyclerView.setLayoutManager(linearLayoutManager);
 
         adapter = new UserFeedPostsVerticalAdapter(eList, getActivity(),null,null);
-        adapter.bindToRecyclerView(recyclerView);
+        adapter.bindToRecyclerView(binding.recyclerView);
         mDecoration = new SuspensionDecoration(getActivity(), eList);
-        recyclerView.addItemDecoration(mDecoration);
+        binding.recyclerView.addItemDecoration(mDecoration);
 
-        recyclerView.setAdapter(adapter);
+        binding.recyclerView.setAdapter(adapter);
 
 
 
         SimpleItemTouchHelperCallback callback = new SimpleItemTouchHelperCallback(adapter,getContext(),eList);
         mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(recyclerView);
+        mItemTouchHelper.attachToRecyclerView(binding.recyclerView);
 
         //
         adapter.setDecoration(mDecoration,callback);
@@ -251,7 +247,7 @@ public class UserFeedUpdateContentFragment extends Fragment {
                                         public void run() {
                                             ALog.d("请求过程中！");
 
-                                            snackbar= Snackbar.make(recyclerView, newNum + "篇新文章，点击显示", Snackbar.LENGTH_INDEFINITE)
+                                            snackbar= Snackbar.make(binding.recyclerView, newNum + "篇新文章，点击显示", Snackbar.LENGTH_INDEFINITE)
                                                     .setActionTextColor(Color.WHITE)
                                                     .setAction("显示", new View.OnClickListener() {
                                                         @Override
@@ -271,14 +267,14 @@ public class UserFeedUpdateContentFragment extends Fragment {
                                                                         public void run() {
                                                                             if (eList.size()==0){
                                                                                 adapter.setNewData(null);
-                                                                                adapter.setEmptyView(R.layout.simple_empty_view,recyclerView);
+                                                                                adapter.setEmptyView(R.layout.simple_empty_view,binding.recyclerView);
                                                                             }else {
                                                                                 //一定是网络请求才会调用这里，所以用diff比较
                                                                                 adapter.setNewDataByDiff(feedItems,notReadNum);
                                                                             }
 
                                                                             //TODO:滚动到添加数据的地方
-//                                                                            recyclerView.smoothScrollToPosition();
+//                                                                            binding.recyclerView.smoothScrollToPosition();
                                                                         }
                                                                     });
                                                                 }
@@ -322,7 +318,7 @@ public class UserFeedUpdateContentFragment extends Fragment {
                                         //主线程
                                         if (eList.size()==0){
                                             adapter.setNewData(null);
-                                            adapter.setEmptyView(R.layout.simple_empty_view,recyclerView);
+                                            adapter.setEmptyView(R.layout.simple_empty_view,binding.recyclerView);
                                         }else {
                                             if (newNum > 0){//网络请求再使用diff比较
                                                 adapter.setNewDataByDiff(feedList,notReadNum);
@@ -347,7 +343,7 @@ public class UserFeedUpdateContentFragment extends Fragment {
                                         isFirstOpen = false;
 
                                         //取消刷新
-                                        refreshLayout.finishRefresh(true);
+                                        binding.refreshLayout.finishRefresh(true);
 
                                         //请求结束
                                         adapter.setRequesting(false);
@@ -378,7 +374,7 @@ public class UserFeedUpdateContentFragment extends Fragment {
     }
 
     public void bindListener(){
-        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+        binding.refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 requestAllData();
@@ -394,10 +390,10 @@ public class UserFeedUpdateContentFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        binding = null;
         if (getActivity()!=null && isconnet){//当活动被回收的时候，服务也必须停止
             getActivity().unbindService(connection);
         }
-        unbinder.unbind();
         EventBus.getDefault().unregister(this);
     }
 
@@ -409,7 +405,7 @@ public class UserFeedUpdateContentFragment extends Fragment {
     public void updateData(ArrayList<String> feedIdList) {
         this.feedIdList = feedIdList;
         this.isFirstOpen = true;
-        refreshLayout.autoRefresh();
+        binding.refreshLayout.autoRefresh();
 
 
     }
@@ -549,7 +545,7 @@ public class UserFeedUpdateContentFragment extends Fragment {
             //列表回顶部
 
             if (feedIdList.size()>0){
-                recyclerView.smoothScrollToPosition(0);//这个方法只保证指定的item被滑动到屏幕中，意味着自下往上滑的话，可以将指定item置顶，但是如果已经在屏幕中的话，那他就不会起作用，并且如果是自上往下滑的话，则置顶的item就会被滑到底部
+                binding.recyclerView.smoothScrollToPosition(0);//这个方法只保证指定的item被滑动到屏幕中，意味着自下往上滑的话，可以将指定item置顶，但是如果已经在屏幕中的话，那他就不会起作用，并且如果是自上往下滑的话，则置顶的item就会被滑到底部
             }
         }
     }
@@ -574,8 +570,8 @@ public class UserFeedUpdateContentFragment extends Fragment {
      * 触发刷新
      */
     public void triggerRefresh() {
-        if (refreshLayout != null) {
-            refreshLayout.autoRefresh();
+        if (binding.refreshLayout != null) {
+            binding.refreshLayout.autoRefresh();
         }
     }
 }

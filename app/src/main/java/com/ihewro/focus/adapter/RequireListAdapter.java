@@ -1,6 +1,6 @@
 package com.ihewro.focus.adapter;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.widget.EditText;
 import android.widget.TextView;
 

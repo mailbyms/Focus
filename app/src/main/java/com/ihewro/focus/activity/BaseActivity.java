@@ -2,14 +2,9 @@ package com.ihewro.focus.activity;
 
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
-
-import com.blankj.ALog;
+import androidx.appcompat.app.AppCompatActivity;
 import com.ihewro.focus.R;
 import com.ihewro.focus.util.StatusBarUtil;
-import com.saber.chentianslideback.SlideBackActivity;
-
 import skin.support.utils.SkinPreference;
 
 /**

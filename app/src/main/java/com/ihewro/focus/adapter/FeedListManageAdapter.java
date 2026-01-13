@@ -1,8 +1,8 @@
 package com.ihewro.focus.adapter;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.InputType;
 import android.view.View;
 
@@ -23,7 +23,6 @@ import com.ihewro.focus.callback.DialogCallback;
 import com.ihewro.focus.task.ShowFeedFolderListDialogTask;
 import com.ihewro.focus.view.FeedOperationPopupView;
 import com.lxj.xpopup.XPopup;
-import com.nostra13.universalimageloader.utils.L;
 
 import org.greenrobot.eventbus.EventBus;
 import org.litepal.LitePal;

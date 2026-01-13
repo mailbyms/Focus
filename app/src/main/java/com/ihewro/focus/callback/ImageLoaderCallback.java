@@ -3,8 +3,6 @@ package com.ihewro.focus.callback;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
-import com.nostra13.universalimageloader.core.assist.FailReason;
-
 /**
  * <pre>
  *     author : hewro
@@ -15,7 +13,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
  * </pre>
  */
 public interface ImageLoaderCallback {
-    void onFailed(ImageView imageView, FailReason failReason);
+    void onFailed(ImageView imageView, Exception failReason);
     void onSuccess(ImageView imageView, Bitmap bitmap);
     void onStart(ImageView imageView);
 }

@@ -7,10 +7,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +36,7 @@ import com.ihewro.focus.fragemnt.search.SearchFeedFolderFragment;
 import com.ihewro.focus.fragemnt.search.SearchFeedItemListFragment;
 import com.ihewro.focus.fragemnt.search.SearchLocalFeedListFragment;
 import com.ihewro.focus.task.TimingService;
+import com.ihewro.focus.databinding.ActivityMainBinding;
 import com.ihewro.focus.util.UIUtil;
 import com.ihewro.focus.view.FeedFolderOperationPopupView;
 import com.ihewro.focus.view.FeedListShadowPopupView;
@@ -66,8 +67,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.PermissionRequest;
 import skin.support.SkinCompatManager;
@@ -76,25 +75,12 @@ import skin.support.utils.SkinPreference;
 
 public class MainActivity extends BaseActivity {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.playButton)
-    LinearLayout playButton;
-    @BindView(R.id.fl_main_body)
-    FrameLayout flMainBody;
-    @BindView(R.id.toolbar_title)
-    TextView toolbarTitle;
-    @BindView(R.id.toolbar_container)
-    FrameLayout toolbarContainer;
+    private ActivityMainBinding binding;
 
     private static final int DRAWER_FOLDER_ITEM = 847;
     private static final int DRAWER_FOLDER = 301;
     private static final int SHOW_ALL = 14;
     private static final int FEED_FOLDER_IDENTIFY_PLUS = 9999;
-    @BindView(R.id.tab_layout)
-    TabLayout tabLayout;
-    @BindView(R.id.subtitle)
-    TextView subtitle;
     public static final int RQUEST_STORAGE_READ = 8;
 
     private int[] expandPositions;
@@ -127,15 +113,15 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
 
 
         if (SkinPreference.getInstance().getSkinName().equals("night")) {
-            toolbar.inflateMenu(R.menu.main_night);
+            binding.toolbar.inflateMenu(R.menu.main_night);
         } else {
-            toolbar.inflateMenu(R.menu.main);
+            binding.toolbar.inflateMenu(R.menu.main);
         }
 
         if (getIntent() != null){
@@ -147,8 +133,8 @@ public class MainActivity extends BaseActivity {
 
             }
         }
-        setSupportActionBar(toolbar);
-        toolbarTitle.setText("全部文章");
+        setSupportActionBar(binding.toolbar);
+        binding.toolbarTitle.setText("全部文章");
         EventBus.getDefault().register(this);
 
 
@@ -182,7 +168,7 @@ public class MainActivity extends BaseActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void initListener() {
-        playButton.setOnLongClickListener(new View.OnLongClickListener() {
+        binding.playButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 //加载框
@@ -201,7 +187,7 @@ public class MainActivity extends BaseActivity {
                             public void run() {
                                 loading.dismiss();
                                 new MaterialDialog.Builder(MainActivity.this)
-                                        .title(toolbarTitle.getText())
+                                        .title(binding.toolbarTitle.getText())
                                         .content("全部数目" + feedItemNum + "\n" + "未读数目" + notReadNum)
                                         .show();
                             }
@@ -236,7 +222,7 @@ public class MainActivity extends BaseActivity {
         });
 
 
-        playButton.setOnTouchListener(new View.OnTouchListener() {
+        binding.playButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return gestureDetector.onTouchEvent(event);
@@ -317,13 +303,11 @@ public class MainActivity extends BaseActivity {
         //显示弹窗
         if (popupView == null) {
             popupView = (FeedListShadowPopupView) new XPopup.Builder(MainActivity.this)
-                    .atView(playButton)
+                    .atView(binding.playButton)
                     .hasShadowBg(true)
                     .setPopupCallback(new SimpleCallback() {
-                        @Override
                         public void onShow() {
                             popupView.getAdapter().setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
-                                @Override
                                 public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                                     if (view.getId() == R.id.item_view) {
                                         int feedFolderId = popupView.getFeedFolders().get(position).getId();
@@ -341,7 +325,6 @@ public class MainActivity extends BaseActivity {
                             });
                         }
 
-                        @Override
                         public void onDismiss() {
                         }
                     })
@@ -405,7 +388,7 @@ public class MainActivity extends BaseActivity {
         // Create the AccountHeader
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withCompactStyle(true)
+                // .withCompactStyle(true)
 //                .withHeaderBackground(R.drawable.moecats)
                 .withTextColorRes(color)
                 .addProfiles(
@@ -427,7 +410,7 @@ public class MainActivity extends BaseActivity {
         //初始化侧边栏
         drawer = new DrawerBuilder().withActivity(this)
                 .withActivity(this)
-                .withToolbar(toolbar)
+                .withToolbar(binding.toolbar)
                 .withTranslucentStatusBar(true)
                 .withAccountHeader(headerResult)
                 .addDrawerItems((IDrawerItem[]) Objects.requireNonNull(subItems.toArray(new IDrawerItem[subItems.size()])))
@@ -591,9 +574,9 @@ public class MainActivity extends BaseActivity {
      */
     private void clickFeedPostsFragment(ArrayList<String> feedIdList) {
         if (feedPostsFragment == null) {
-            feedPostsFragment = UserFeedUpdateContentFragment.newInstance(feedIdList, toolbarTitle,subtitle);
+            feedPostsFragment = UserFeedUpdateContentFragment.newInstance(feedIdList, binding.toolbarTitle,binding.subtitle);
         }
-        toolbar.setTitle("全部文章");
+        binding.toolbar.setTitle("全部文章");
         addOrShowFragment(getSupportFragmentManager().beginTransaction(), feedPostsFragment);
     }
 
@@ -607,7 +590,7 @@ public class MainActivity extends BaseActivity {
         if (feedPostsFragment == null) {
             ALog.d("出现未知错误");
         } else {
-            toolbarTitle.setText(title);
+            binding.toolbarTitle.setText(title);
             feedPostsFragment.updateData(feedIdList);
         }
 
@@ -730,18 +713,13 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_filter:
-
-                drawerPopupView.toggle();
-                break;
-            case R.id.action_search:
-                // 触发下拉刷新
-                if (feedPostsFragment != null) {
-                    feedPostsFragment.triggerRefresh();
-                }
-                break;
+        int id = item.getItemId();
+        if (id == R.id.action_filter) {
+            drawerPopupView.toggle();
+        } else if (id == R.id.action_search) {
+            if (feedPostsFragment != null) {
+                feedPostsFragment.triggerRefresh();
+            }
         }
         return true;
     }
@@ -792,16 +770,16 @@ public class MainActivity extends BaseActivity {
                 .popupPosition(PopupPosition.Right)//右边
                 .hasStatusBarShadow(true) //启用状态栏阴影
                 .setPopupCallback(new SimpleCallback() {
-                    @Override
+                    //@Override
                     public void onShow() {
 
                     }
 
-                    @Override
+                    //@Override
                     public void onDismiss() {
                         //刷新当前页面的数据，因为筛选的规则变了
                         if (drawerPopupView.isNeedUpdate()) {
-                            clickAndUpdateMainFragmentData(feedPostsFragment.getFeedIdList(), toolbarTitle.getText().toString(),selectIdentify);
+                            clickAndUpdateMainFragmentData(feedPostsFragment.getFeedIdList(), binding.toolbarTitle.getText().toString(),selectIdentify);
                             drawerPopupView.setNeedUpdate(false);
                         }
                     }
@@ -825,6 +803,7 @@ public class MainActivity extends BaseActivity {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+        binding = null;
     }
 
 

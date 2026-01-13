@@ -1,7 +1,7 @@
 package com.ihewro.focus.view;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.InputType;
 
 import com.afollestad.materialdialogs.DialogAction;

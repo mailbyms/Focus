@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -374,7 +374,7 @@ public class RequestFeedListDataService extends Service {
         }
         //绑定点击事件
         Intent intent = new Intent(activity,MainActivity.class);
-        PendingIntent pending_intent_go = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pending_intent_go = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         builderProgress.setAutoCancel(true);
         builderProgress.setContentIntent(pending_intent_go);

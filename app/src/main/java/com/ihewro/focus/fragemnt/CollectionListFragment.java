@@ -4,10 +4,10 @@ package com.ihewro.focus.fragemnt;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.blankj.ALog;
 import com.ihewro.focus.R;
 import com.ihewro.focus.adapter.CollectionListAdapter;
+import com.ihewro.focus.databinding.FragmentCollectionFolderBinding;
 import com.ihewro.focus.adapter.FeedListAdapter;
 import com.ihewro.focus.bean.Collection;
 import com.ihewro.focus.bean.CollectionAndFolderRelation;
@@ -32,9 +33,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,9 +42,7 @@ public class CollectionListFragment extends Fragment {
     private List<Collection> collectionList = new ArrayList<>();
 
     private static final String COLLECTION_FOLDER_ID = "COLLECTION_FOLDER_ID";
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-    Unbinder unbinder;
+    private FragmentCollectionFolderBinding binding;
 
     public static CollectionListFragment newInstance(int id,Activity activity) {
 
@@ -84,9 +80,8 @@ public class CollectionListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_collection_folder, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
+        binding = FragmentCollectionFolderBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
 
@@ -104,12 +99,12 @@ public class CollectionListFragment extends Fragment {
 
     private void createRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(linearLayoutManager);
+        binding.recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new CollectionListAdapter(collectionFolderId,collectionList,activity);
-        adapter.bindToRecyclerView(recyclerView);
+        adapter.bindToRecyclerView(binding.recyclerView);
 
         adapter.setNewData(null);
-        adapter.setEmptyView(R.layout.simple_loading_view,recyclerView);
+        adapter.setEmptyView(R.layout.simple_loading_view,binding.recyclerView);
     }
 
 
@@ -143,12 +138,12 @@ public class CollectionListFragment extends Fragment {
                 UIUtil.runOnUiThread(activity, new Runnable() {
                     @Override
                     public void run() {
-                        if (recyclerView!=null){
+                        if (binding.recyclerView!=null){
                             if (collectionList.size() == 0){
-                                adapter.setEmptyView(R.layout.collction_empty_view,recyclerView);
+                                adapter.setEmptyView(R.layout.collction_empty_view,binding.recyclerView);
                             }else {
                                 adapter.setNewData(collectionList);
-                                recyclerView.addItemDecoration(new SuspensionDecoration(getActivity(), collectionList));
+                                binding.recyclerView.addItemDecoration(new SuspensionDecoration(getActivity(), collectionList));
                             }
                         }
                     }
@@ -157,10 +152,9 @@ public class CollectionListFragment extends Fragment {
         }).start();
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        binding = null;
     }
 }

@@ -1,7 +1,7 @@
 package com.ihewro.focus.helper;
 
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 import android.view.View;
 
 import com.blankj.ALog;

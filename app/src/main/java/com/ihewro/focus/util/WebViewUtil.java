@@ -5,7 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.customtabs.CustomTabsIntent;
+import androidx.browser.customtabs.CustomTabsIntent;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
@@ -81,7 +81,7 @@ public class WebViewUtil {
         // 移除所有超链接，但保留其中的文本内容
         Elements links = doc.select("a");
         for (Element link : links) {
-            link.replaceWith(new org.jsoup.nodes.TextNode(link.text(), ""));
+            link.replaceWith(new org.jsoup.nodes.TextNode(link.text()));
         }
 
         html = doc.toString();

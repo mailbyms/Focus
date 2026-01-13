@@ -4,13 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +36,7 @@ import com.ihewro.focus.util.ShareUtil;
 import com.ihewro.focus.util.StatusBarUtil;
 import com.ihewro.focus.util.UIUtil;
 import com.ihewro.focus.util.WebViewUtil;
+import com.ihewro.focus.databinding.ActivityPostDetailBinding;
 
 import org.greenrobot.eventbus.EventBus;
 import org.litepal.crud.callback.SaveCallback;
@@ -45,8 +46,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import skin.support.utils.SkinPreference;
 
@@ -57,15 +56,7 @@ public class PostDetailActivity extends BackActivity {
     public static final int ORIGIN_MAIN = 350;
     public static final int ORIGIN_STAR = 836;
 
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
-    @BindView(R.id.appbar)
-    AppBarLayout appbar;
-    @BindView(R.id.viewPager)
-    ViewPager viewPager;
-
+    private ActivityPostDetailBinding binding;
 
     private boolean currentItemReady = false;
     private boolean starItemReady = false;
@@ -117,9 +108,9 @@ public class PostDetailActivity extends BackActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_detail);
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
+        binding = ActivityPostDetailBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
 
 
         if (getSupportActionBar() != null) {
@@ -155,7 +146,7 @@ public class PostDetailActivity extends BackActivity {
     private void initToolbarColor() {
         //根据偏好设置背景颜色修改toolbar的背景颜色
         if (!SkinPreference.getInstance().getSkinName().equals("night")) {
-            toolbar.setBackgroundColor(PostSetting.getBackgroundInt(PostDetailActivity.this));
+            binding.toolbar.setBackgroundColor(PostSetting.getBackgroundInt(PostDetailActivity.this));
             StatusBarUtil.setColor(this, PostSetting.getBackgroundInt(PostDetailActivity.this), 0);
         }
     }
@@ -195,15 +186,15 @@ public class PostDetailActivity extends BackActivity {
                 UIUtil.runOnUiThread(PostDetailActivity.this, new Runnable() {
                     @Override
                     public void run() {
-                        viewPager.setAdapter(adapter);
+                        binding.viewPager.setAdapter(adapter);
 
                         final float PARALLAX_COEFFICIENT = 0.5f;
                         final float DISTANCE_COEFFICIENT = 0.1f;
 
-                        viewPager.setPageTransformer(true, new ParallaxTransformer(adapter,null,PARALLAX_COEFFICIENT, DISTANCE_COEFFICIENT));
+                        binding.viewPager.setPageTransformer(true, new ParallaxTransformer(adapter,null,PARALLAX_COEFFICIENT, DISTANCE_COEFFICIENT));
 
                         //移动到当前文章的位置
-                        viewPager.setCurrentItem(mIndex);
+                        binding.viewPager.setCurrentItem(mIndex);
 
 
                         ALog.d("首次加载");
@@ -211,7 +202,7 @@ public class PostDetailActivity extends BackActivity {
                         setCurrentItemStatus();
                         initPostClickListener();
 
-                        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                        binding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                             @Override
                             public void onPageScrolled(int i, float v, int i1) {
 
@@ -237,11 +228,10 @@ public class PostDetailActivity extends BackActivity {
                         });
 
 
-
                         if (notReadNum <= 0) {
-                            toolbar.setTitle("");
+                            binding.toolbar.setTitle("");
                         } else {
-                            toolbar.setTitle(notReadNum + "");
+                            binding.toolbar.setTitle(notReadNum + "");
                         }
 
                     }
@@ -283,7 +273,7 @@ public class PostDetailActivity extends BackActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        toolbar.setTitle("");
+        binding.toolbar.setTitle("");
         if (SkinPreference.getInstance().getSkinName().equals("night")) {
             getMenuInflater().inflate(R.menu.post_night, menu);
         } else {
@@ -305,43 +295,34 @@ public class PostDetailActivity extends BackActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_link://访问外链
-                openLink(currentFeedItem);
-                break;
-            case R.id.action_share://分享
-                ShareUtil.shareBySystem(PostDetailActivity.this, "text", currentFeedItem.getTitle() + "\n" + currentFeedItem.getUrl());
-                break;
-
-            case R.id.text_setting:
-                ReadSettingDialog = new MaterialDialog.Builder(this)
-                        .customView(R.layout.read_setting, true)
-                        .neutralText("重置")
-                        .positiveText("确定")
-                        .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                //重置设置
-                                UserPreference.updateOrSaveValueByKey(PostSetting.FONT_SIZE, PostSetting.FONT_SIZE_DEFAULT);
-                                UserPreference.updateOrSaveValueByKey(PostSetting.FONT_SPACING, PostSetting.FONT_SPACING_DEFAULT);
-                                UserPreference.updateOrSaveValueByKey(PostSetting.LINE_SPACING, PostSetting.LINE_SPACING_DEFAULT);
+        int id = item.getItemId();
+        if (id == R.id.action_link) {
+            openLink(currentFeedItem);
+        } else if (id == R.id.action_share) {
+            ShareUtil.shareBySystem(PostDetailActivity.this, "text", currentFeedItem.getTitle() + "\n" + currentFeedItem.getUrl());
+        } else if (id == R.id.text_setting) {
+            ReadSettingDialog = new MaterialDialog.Builder(this)
+                    .customView(R.layout.read_setting, true)
+                    .neutralText("重置")
+                    .positiveText("确定")
+                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            UserPreference.updateOrSaveValueByKey(PostSetting.FONT_SIZE, PostSetting.FONT_SIZE_DEFAULT);
+                            UserPreference.updateOrSaveValueByKey(PostSetting.FONT_SPACING, PostSetting.FONT_SPACING_DEFAULT);
+                            UserPreference.updateOrSaveValueByKey(PostSetting.LINE_SPACING, PostSetting.LINE_SPACING_DEFAULT);
 //                                adapter.notifyItemChanged(mIndex);
-                            }
-                        })
-                        .show();
+                        }
+                    })
+                    .show();
 
-                initReadSettingView();
-                initReadSettingListener();
+            initReadSettingView();
+            initReadSettingListener();
 
 
-                initReadBackgroundView();
-
-                break;
-
-            case android.R.id.home:
-                finish();
-                break;
-
+            initReadBackgroundView();
+        } else if (id == android.R.id.home) {
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -495,15 +476,16 @@ public class PostDetailActivity extends BackActivity {
 
         //UI修改
         if (notReadNum <= 0) {
-            toolbar.setTitle("");
+            binding.toolbar.setTitle("");
         } else {
-            toolbar.setTitle(notReadNum + "");
+            binding.toolbar.setTitle(notReadNum + "");
         }
 
     }
 
     @Override
     protected void onDestroy() {
+        binding = null;
 
         //将首页中已读的文章样式标记为已读
         if (readList.size() > 0) {

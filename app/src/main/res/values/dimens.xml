@@ -8,4 +8,7 @@
     <item name="parallax_speed_slow_rev" format="float" type="dimen">-2.5</item>
     <item name="parallax_speed_medium_rev" format="float" type="dimen">-5.0</item>
     <item name="parallax_speed_fast_rev" format="float" type="dimen">-10.0</item>
+
+    <!-- MaterialDrawer -->
+    <dimen name="material_drawer_account_header_text">14sp</dimen>
 </resources>

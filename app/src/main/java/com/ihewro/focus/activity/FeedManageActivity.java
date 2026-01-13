@@ -3,10 +3,10 @@ package com.ihewro.focus.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -18,6 +18,7 @@ import com.ihewro.focus.bean.EventMessage;
 import com.ihewro.focus.bean.Feed;
 import com.ihewro.focus.bean.FeedRequire;
 import com.ihewro.focus.bean.Help;
+import com.ihewro.focus.databinding.ActivityFeedManageBinding;
 import com.ihewro.focus.fragemnt.FeedFolderListManageFragment;
 import com.ihewro.focus.fragemnt.FeedListManageFragment;
 import com.ihewro.focus.util.OPMLCreateHelper;
@@ -34,8 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -45,11 +44,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  */
 public class FeedManageActivity extends BackActivity implements EasyPermissions.PermissionCallbacks,FileChooserDialog.FileCallback {
 
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.fl_main_body)
-    FrameLayout flMainBody;
+    private ActivityFeedManageBinding binding;
 
     private Fragment currentFragment = null;
     OPMLReadHelper opmlReadHelper;
@@ -66,11 +61,11 @@ public class FeedManageActivity extends BackActivity implements EasyPermissions.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feed_manage);
-        ButterKnife.bind(this);
+        binding = ActivityFeedManageBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         EventBus.getDefault().register(this);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         showFeedFolderListManageFragment();
@@ -125,7 +120,7 @@ public class FeedManageActivity extends BackActivity implements EasyPermissions.
             transaction.hide(willCloseFragment);
         }
         if (!fragment.isAdded()) { // 如果当前fragment未被添加，则添加到Fragment管理器中
-            transaction.add(R.id.fl_main_body, currentFragment).commitAllowingStateLoss();
+            transaction.add(binding.flMainBody.getId(), currentFragment).commitAllowingStateLoss();
         } else {
             transaction.show(currentFragment).commitAllowingStateLoss();
         }
@@ -153,27 +148,21 @@ public class FeedManageActivity extends BackActivity implements EasyPermissions.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-        switch (item.getItemId()){
-            case R.id.action_import://导入
-                opmlReadHelper = new OPMLReadHelper(FeedManageActivity.this);
-                opmlReadHelper.run();
-                break;
-
-            case R.id.action_export://导出
-                opmlCreateHelper = new OPMLCreateHelper(FeedManageActivity.this);
-                opmlCreateHelper.run();
-                break;
-
-            case R.id.action_add_by_url:
-                //弹窗
-                List<FeedRequire> list = new ArrayList<>();
-                list.add(new FeedRequire("订阅地址","举例：https://www.ihewro.com/feed",FeedRequire.SET_URL));
-                list.add(new FeedRequire("订阅名称","随意给订阅取一个名字",FeedRequire.SET_NAME));
-                new XPopup.Builder(FeedManageActivity.this)
+        int id = item.getItemId();
+        if (id == R.id.action_import) {
+            opmlReadHelper = new OPMLReadHelper(FeedManageActivity.this);
+            opmlReadHelper.run();
+        } else if (id == R.id.action_export) {
+            opmlCreateHelper = new OPMLCreateHelper(FeedManageActivity.this);
+            opmlCreateHelper.run();
+        } else if (id == R.id.action_add_by_url) {
+            List<FeedRequire> list = new ArrayList<>();
+            list.add(new FeedRequire("订阅地址","举例：https://www.ihewro.com/feed",FeedRequire.SET_URL));
+            list.add(new FeedRequire("订阅名称","随意给订阅取一个名字",FeedRequire.SET_NAME));
+            new XPopup.Builder(FeedManageActivity.this)
 //                        .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
                         .asCustom(new RequireListPopupView(FeedManageActivity.this,list,"手动订阅","适用于高级玩家",new Help(false),new Feed(),getSupportFragmentManager()))
                         .show();
-                break;
         }
         return true;
     }
@@ -254,5 +243,6 @@ public class FeedManageActivity extends BackActivity implements EasyPermissions.
         if (EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().unregister(this);
         }
+        binding = null;
     }
 }

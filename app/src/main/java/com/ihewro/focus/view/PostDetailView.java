@@ -1,8 +1,8 @@
 package com.ihewro.focus.view;
 
 import android.content.Context;
-import android.support.annotation.ColorInt;
-import android.support.annotation.IdRes;
+import androidx.annotation.ColorInt;
+import androidx.annotation.IdRes;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;

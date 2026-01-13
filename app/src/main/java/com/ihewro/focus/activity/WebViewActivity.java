@@ -9,7 +9,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.blankj.ALog;
 import com.google.common.io.ByteStreams;
 import com.ihewro.focus.R;
+import com.ihewro.focus.databinding.ActivityWebBinding;
 import com.ihewro.focus.util.MJavascriptInterface;
 import com.ihewro.focus.view.MyScrollView;
 import com.ihewro.focus.view.WebLayout;
@@ -48,8 +49,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
 /**
@@ -58,12 +57,7 @@ import es.dmoral.toasty.Toasty;
 public class WebViewActivity extends BackActivity {
 
     public static final String EXTRA_URL = "extra.url";
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.webview)
-    WebView webView;
-    @BindView(R.id.container)
-    LinearLayout container;
+    private ActivityWebBinding binding;
 
     private String url;
 
@@ -82,8 +76,8 @@ public class WebViewActivity extends BackActivity {
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
 //            ALog.d("接收到网站的标题");
-            if (toolbar != null) {
-                toolbar.setTitle(title);
+            if (binding.toolbar != null) {
+                binding.toolbar.setTitle(title);
             }
         }
 
@@ -147,9 +141,9 @@ public class WebViewActivity extends BackActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_web);
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
+        binding = ActivityWebBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -158,18 +152,18 @@ public class WebViewActivity extends BackActivity {
 
         String url = getIntent().getStringExtra(EXTRA_URL);
         this.url = url;
-        toolbar.setTitle(url);
+        binding.toolbar.setTitle(url);
         webLayout = new WebLayout(this);
         String[] imageUrls = {};
 
 
         mAgentWeb = AgentWeb.with(this)
-                .setAgentWebParent(container, new LinearLayout.LayoutParams(-1, -1))
+                .setAgentWebParent(binding.container, new LinearLayout.LayoutParams(-1, -1))
                 .useDefaultIndicator()
                 .setWebChromeClient(mWebChromeClient)
                 .setWebViewClient(mWebViewClient)
                 .setWebLayout(webLayout)
-                .addJavascriptInterface("imagelistener",new MJavascriptInterface(WebViewActivity.this,imageUrls,webView))
+                .addJavascriptInterface("imagelistener",new MJavascriptInterface(WebViewActivity.this,imageUrls,binding.webview))
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1)
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他应用时，弹窗咨询用户是否前往其他应用
@@ -213,30 +207,29 @@ public class WebViewActivity extends BackActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-        switch (item.getItemId()) {
-            case R.id.refresh:
-                if (mAgentWeb != null) {
-                    mAgentWeb.getUrlLoader().reload(); // 刷新
-                }
-                return true;
-
-            case R.id.copy:
-                if (mAgentWeb != null) {
-                    ClipboardManager mClipboardManager = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
-                    mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, this.url));
-                    Toasty.success(this,"复制成功").show();
-                }
-                return true;
-            case R.id.default_browser:
-                if (mAgentWeb != null) {
-                    openBrowser(mAgentWeb.getWebCreator().getWebView().getUrl());
-                }
-                return true;
-            case R.id.default_clean:
-                toCleanWebCache();
-            default:
-                return false;
+        int id = item.getItemId();
+        if (id == R.id.refresh) {
+            if (mAgentWeb != null) {
+                mAgentWeb.getUrlLoader().reload();
+            }
+            return true;
+        } else if (id == R.id.copy) {
+            if (mAgentWeb != null) {
+                ClipboardManager mClipboardManager = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
+                mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, this.url));
+                Toasty.success(this,"复制成功").show();
+            }
+            return true;
+        } else if (id == R.id.default_browser) {
+            if (mAgentWeb != null) {
+                openBrowser(mAgentWeb.getWebCreator().getWebView().getUrl());
+            }
+            return true;
+        } else if (id == R.id.default_clean) {
+            toCleanWebCache();
+            return true;
         }
+        return false;
     }
 
     /**
@@ -280,4 +273,9 @@ public class WebViewActivity extends BackActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
+    }
 }

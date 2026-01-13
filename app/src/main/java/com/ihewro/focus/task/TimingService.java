@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 
 import com.blankj.ALog;
 import com.ihewro.focus.GlobalConfig;
@@ -92,9 +92,9 @@ public class TimingService extends Service {
                 PendingIntent pi = null;
 
                 if (isNewAlarm){
-                    PendingIntent.getBroadcast(this, 0, intent2, PendingIntent.FLAG_CANCEL_CURRENT);//重新创建定时器
+                    PendingIntent.getBroadcast(this, 0, intent2, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);//重新创建定时器
                 }else {
-                    PendingIntent.getBroadcast(this, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);//复用之前的定时器
+                    PendingIntent.getBroadcast(this, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);//复用之前的定时器
                 }
 
                 // pendingIntent 为发送广播
@@ -182,7 +182,7 @@ public class TimingService extends Service {
         //绑定点击事件
         Intent intent = new Intent(UIUtil.getContext(), MainActivity.class);
         intent.putExtra(GlobalConfig.is_need_update_main,true);
-        PendingIntent pending_intent_go = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pending_intent_go = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         builderProgress.setAutoCancel(true);
         builderProgress.setContentIntent(pending_intent_go);
 
@@ -207,7 +207,7 @@ public class TimingService extends Service {
         //绑定点击事件
         Intent intent = new Intent(UIUtil.getContext(), MainActivity.class);
         intent.putExtra(GlobalConfig.is_need_update_main,true);
-        PendingIntent pending_intent_go = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pending_intent_go = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         builderProgress.setContentIntent(pending_intent_go);
 
         notification = builderProgress.build();

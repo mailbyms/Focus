@@ -3,7 +3,7 @@ package com.ihewro.focus.view;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;

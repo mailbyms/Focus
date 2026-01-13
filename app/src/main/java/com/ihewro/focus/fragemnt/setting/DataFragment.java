@@ -1,7 +1,7 @@
 package com.ihewro.focus.fragemnt.setting;
 
-import android.support.annotation.NonNull;
-import android.support.v7.preference.Preference;
+import androidx.annotation.NonNull;
+import androidx.preference.Preference;
 import android.text.InputType;
 import android.widget.Toast;
 
