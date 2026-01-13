@@ -123,5 +123,9 @@
     <string name="pref_title_not_use_chrome">浏览器不使用Chrome内核</string>
     <string name="pref_summary_not_use_chrome">如果你的手机内有Chrome内核的浏览器，文章内链接优先默认调用Chrome内核，你可以关闭该选项</string>
 
+    <string name="pref_key_test_insert">pref_key_test_insert</string>
+    <string name="pref_title_test_insert">测试插入数据</string>
+    <string name="pref_summary_test_insert">生成并插入1000条随机文章，用于测试清理功能性能</string>
+
 
 </resources>

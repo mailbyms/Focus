@@ -52,4 +52,9 @@
         android:title="@string/pref_title_recover"
         android:summary="@string/pref_summary_recover"/>
 
+    <androidx.preference.Preference
+        android:key="@string/pref_key_test_insert"
+        android:title="@string/pref_title_test_insert"
+        android:summary="@string/pref_summary_test_insert"/>
+
 </androidx.preference.PreferenceScreen>
