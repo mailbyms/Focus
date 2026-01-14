@@ -46,7 +46,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
@@ -58,6 +60,8 @@ public class UserFeedUpdateContentFragment extends Fragment {
     private FragmentUserFeedUpdateContentBinding binding;
     private SuspensionDecoration mDecoration;
     List<FeedItem> eList = new ArrayList<FeedItem>();
+    // 优化：使用 Map 缓存 ID 到位置的映射，将 O(n) 线性查找优化为 O(1)
+    private Map<Integer, Integer> idToPositionMap = new HashMap<>();
     public static final String FEED_LIST_ID = "FEED_LIST_ID";
 
     UserFeedPostsVerticalAdapter adapter;
@@ -261,6 +265,11 @@ public class UserFeedUpdateContentFragment extends Fragment {
                                                                 public void run() {
                                                                     eList.clear();
                                                                     eList.addAll(feedItems);
+                                                                    // 同步更新 ID 到位置的映射
+                                                                    idToPositionMap.clear();
+                                                                    for (int i = 0; i < feedItems.size(); i++) {
+                                                                        idToPositionMap.put(feedItems.get(i).getId(), i);
+                                                                    }
 
                                                                     UIUtil.runOnUiThread(getActivity(), new Runnable() {
                                                                         @Override
@@ -305,6 +314,11 @@ public class UserFeedUpdateContentFragment extends Fragment {
                                 //子线程
                                 eList.clear();
                                 eList.addAll(feedList);
+                                // 同步更新 ID 到位置的映射
+                                idToPositionMap.clear();
+                                for (int i = 0; i < feedList.size(); i++) {
+                                    idToPositionMap.put(feedList.get(i).getId(), i);
+                                }
 
 //                                ALog.d("列表数目" + eList.size());
                                if (newNum > 0){//获取到新的数据才自动备份
@@ -416,10 +430,16 @@ public class UserFeedUpdateContentFragment extends Fragment {
             @Override
             public void run() {
                 notReadNum  = 0;
-                if (feedIdList.size() >0){
+                if (feedIdList.size() > 0){
+                    // 优化：使用批量 IN 查询替代循环查询，将 O(n) 次数据库操作优化为 O(1)
+                    StringBuilder feedIds = new StringBuilder();
                     for (int i = 0; i < feedIdList.size(); i++) {
-                        notReadNum += LitePal.where("read = ? and feedid = ?","0",feedIdList.get(i)).count(FeedItem.class);
+                        if (i > 0) {
+                            feedIds.append(",");
+                        }
+                        feedIds.append(feedIdList.get(i));
                     }
+                    notReadNum = (int) LitePal.where("read = ? and feedid in (?)", "0", feedIds.toString()).count(FeedItem.class);
                 }else {//为空表示显示所有的feedId
                     notReadNum = LitePal.where("read = ?","0").count(FeedItem.class);
                 }
@@ -477,20 +497,17 @@ public class UserFeedUpdateContentFragment extends Fragment {
 
         }
         else if (Objects.equals(eventBusMessage.getType(), EventMessage.MAKE_READ_STATUS_BY_ID_LIST)){//已读状态修改
-            //寻找到id的位置
+            // 优化：使用 Map 查找替代线性搜索，将 O(n) 优化为 O(1)
             ALog.d("MAKE_READ_STATUS_BY_ID_LIST");
             List<Integer> list = eventBusMessage.getIntIds();
 
             for (Integer idInList: list){
-                int pos = -1;
-                for (int i = 0;i<eList.size();i++){
-                    if (eList.get(i).getId() == idInList){
-                        pos = i;
-                        break;
-                    }
+                // 从 Map 中直接获取位置，避免线性搜索
+                Integer pos = idToPositionMap.get(idInList);
+                if (pos != null) {
+                    eList.get(pos).setRead(true);
+                    adapter.notifyItemChanged(pos);
                 }
-                eList.get(pos).setRead(true);
-                adapter.notifyItemChanged(pos);
             }
 
         }

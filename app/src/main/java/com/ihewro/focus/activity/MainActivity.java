@@ -112,10 +112,7 @@ public class MainActivity extends BaseActivity {
         setContentView(binding.getRoot());
         StatusBarUtil.setColor(this, getResources().getColor(R.color.colorPrimary), 0);
 
-        binding.toolbar.inflateMenu(R.menu.main);
-        binding.toolbar.inflateMenu(R.menu.main);
-        binding.toolbar.inflateMenu(R.menu.main);
-        binding.toolbar.inflateMenu(R.menu.main);
+        // 优化：移除重复的 inflateMenu 调用
         binding.toolbar.inflateMenu(R.menu.main);
 
         if (getIntent() != null){
@@ -305,15 +302,27 @@ public class MainActivity extends BaseActivity {
                                 public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                                     if (view.getId() == R.id.item_view) {
                                         int feedFolderId = popupView.getFeedFolders().get(position).getId();
-                                        List<Feed> feeds = LitePal.where("feedfolderid = ?", String.valueOf(feedFolderId)).find(Feed.class);
-                                        ArrayList<String> list = new ArrayList<>();
+                                        // 优化：将数据库查询移至后台线程，避免阻塞UI
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                List<Feed> feeds = LitePal.where("feedfolderid = ?", String.valueOf(feedFolderId)).find(Feed.class);
+                                                ArrayList<String> list = new ArrayList<>();
 
-                                        for (int i = 0; i < feeds.size(); i++) {
-                                            list.add(String.valueOf(feeds.get(i).getId()));
-                                        }
-                                        //切换到指定文件夹�?
-                                        clickAndUpdateMainFragmentData(list, popupView.getFeedFolders().get(position).getName(),-1);
-                                        popupView.dismiss();//关闭弹窗
+                                                for (int i = 0; i < feeds.size(); i++) {
+                                                    list.add(String.valueOf(feeds.get(i).getId()));
+                                                }
+                                                final ArrayList<String> finalList = list;
+                                                UIUtil.runOnUiThread(MainActivity.this, new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        //切换到指定文件夹
+                                                        clickAndUpdateMainFragmentData(finalList, popupView.getFeedFolders().get(position).getName(),-1);
+                                                        popupView.dismiss();//关闭弹窗
+                                                    }
+                                                });
+                                            }
+                                        }).start();
                                     }
                                 }
                             });
@@ -571,6 +580,17 @@ public class MainActivity extends BaseActivity {
         subItems.add(AllDrawerItem);
         subItems.add(new SectionDrawerItem().withName("订阅源").withDivider(false));
 
+        // 优化：一次性批量查询所有 feedId 的未读数，使用 GROUP BY 聚合查询
+        // 将 O(n*m) 次数据库查询优化为 O(1) 次，大幅提升性能
+        java.util.HashMap<Integer, Integer> feedUnreadMap = new java.util.HashMap<>();
+        android.database.Cursor cursor = LitePal.findBySQL("SELECT feedid, COUNT(*) as count FROM feeditem WHERE read = 0 GROUP BY feedid");
+        while (cursor.moveToNext()) {
+            int feedId = cursor.getInt(0);
+            int count = cursor.getInt(1);
+            feedUnreadMap.put(feedId, count);
+        }
+        cursor.close();
+
         List<FeedFolder> feedFolderList = LitePal.order("ordervalue").find(FeedFolder.class);
         for (int i = 0; i < feedFolderList.size(); i++) {
 
@@ -582,7 +602,8 @@ public class MainActivity extends BaseActivity {
             boolean haveErrorFeedInCurrentFolder = false;
             for (int j = 0; j < feedList.size(); j++) {
                 final Feed temp = feedList.get(j);
-                int current_notReadNum = LitePal.where("read = ? and feedid = ?", "0", String.valueOf(temp.getId())).count(FeedItem.class);
+                // 优化：从 Map 中直接获取未读数，避免数据库查询
+                int current_notReadNum = feedUnreadMap.containsKey(temp.getId()) ? feedUnreadMap.get(temp.getId()) : 0;
 
                 final SecondaryDrawerItem secondaryDrawerItem = new SecondaryDrawerItem().withName(temp.getName()).withSelectable(true).withTag(DRAWER_FOLDER_ITEM).withIdentifier(feedList.get(j).getId());
                 if (feedList.get(j).isOffline()){
