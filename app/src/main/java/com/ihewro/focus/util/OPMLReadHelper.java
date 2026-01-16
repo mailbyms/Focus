@@ -247,7 +247,10 @@ public class OPMLReadHelper {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    EventBus.getDefault().post(new EventMessage(EventMessage.IMPORT_OPML_FEED));
+                    // 检查 Activity 是否还未销毁
+                    if (activity != null && !activity.isFinishing()) {
+                        EventBus.getDefault().post(new EventMessage(EventMessage.IMPORT_OPML_FEED));
+                    }
                 }
             },500);
 

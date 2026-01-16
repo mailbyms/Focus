@@ -98,6 +98,9 @@ public class MainActivity extends BaseActivity {
 
     private long selectIdentify;
 
+    // 用于管理 UI 更新的 Handler，防止内存泄漏和空指针异常
+    private final Handler uiHandler = new Handler();
+
     private List<Long> expandFolderIdentify = new ArrayList<>();
 
     public static void activityStart(Activity activity) {
@@ -720,22 +723,28 @@ public class MainActivity extends BaseActivity {
     public void refreshUI(EventMessage eventBusMessage) {
         if (EventMessage.feedAndFeedFolderAndItemOperation.contains(eventBusMessage.getType())) {//更新整个左侧边栏
 //            ALog.d("收到新的订阅添加，更新！" + eventBusMessage);
-            new Handler().postDelayed(new Runnable() {
+            uiHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    ALog.d("重构");
-                    updateDrawer();
+                    // 检查 Activity 是否还未销毁
+                    if (!isFinishing() && !isDestroyed()) {
+                        ALog.d("重构");
+                        updateDrawer();
+                    }
                 }
-            }, 100); // 延迟一下，因为数据异步存储需要时�?
+            }, 100); // 延迟一下，因为数据异步存储需要时?
         }else if (EventMessage.updateBadge.contains(eventBusMessage.getType())){//只需要修改侧边栏阅读书目
-            new Handler().postDelayed(new Runnable() {
+            uiHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    //打印map
-                    ALog.d("更新左侧边栏");
-                    updateDrawer();
+                    // 检查 Activity 是否还未销毁
+                    if (!isFinishing() && !isDestroyed()) {
+                        //打印map
+                        ALog.d("更新左侧边栏");
+                        updateDrawer();
+                    }
                 }
-            }, 100); // 延迟一下，因为数据异步存储需要时�?
+            }, 100); // 延迟一下，因为数据异步存储需要时?
 
         } else if (Objects.equals(eventBusMessage.getType(), EventMessage.FEED_PULL_DATA_ERROR)) {
 //            ALog.d("收到错误FeedId List");
@@ -782,6 +791,8 @@ public class MainActivity extends BaseActivity {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+        // 清理所有 Handler 回调，防止在 Activity 销毁后执行
+        uiHandler.removeCallbacksAndMessages(null);
         binding = null;
     }
 

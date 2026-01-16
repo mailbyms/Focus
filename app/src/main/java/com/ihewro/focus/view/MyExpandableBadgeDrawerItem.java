@@ -108,14 +108,17 @@ public class MyExpandableBadgeDrawerItem extends BaseDescribeableDrawerItem<MyEx
     private Drawer.OnDrawerItemClickListener mOnArrowDrawerItemClickListener = new Drawer.OnDrawerItemClickListener() {
         @Override
         public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-            if (drawerItem instanceof AbstractDrawerItem && drawerItem.isEnabled()) {
+            if (view != null && drawerItem instanceof AbstractDrawerItem && drawerItem.isEnabled()) {
                 if (((AbstractDrawerItem) drawerItem).getSubItems() != null) {
-                    if (((AbstractDrawerItem) drawerItem).isExpanded()) {
-                        ViewCompat.animate(view.findViewById(R.id.material_drawer_arrow)).rotation(MyExpandableBadgeDrawerItem.this.arrowRotationAngleEnd).start();
-                    } else {
-                        ViewCompat.animate(view.findViewById(R.id.material_drawer_arrow))
-                                .rotation(MyExpandableBadgeDrawerItem.this.arrowRotationAngleStart)
-                                .start();
+                    View arrowView = view.findViewById(R.id.material_drawer_arrow);
+                    if (arrowView != null) {
+                        if (((AbstractDrawerItem) drawerItem).isExpanded()) {
+                            ViewCompat.animate(arrowView).rotation(MyExpandableBadgeDrawerItem.this.arrowRotationAngleEnd).start();
+                        } else {
+                            ViewCompat.animate(arrowView)
+                                    .rotation(MyExpandableBadgeDrawerItem.this.arrowRotationAngleStart)
+                                    .start();
+                        }
                     }
                 }
             }
