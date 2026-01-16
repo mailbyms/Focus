@@ -97,15 +97,24 @@ public class SuspensionDecoration extends RecyclerView.ItemDecoration {
             position -= getHeaderViewCount();
             //pos为1，size为1，1>0? true
             if (position < mDatas.size() && mDatas.size() > 0){//保证不越界
-                if (mDatas == null || position > mDatas.size() - 1 || position < 0 || !mDatas.get(position).isShowSuspension()) {
+                // 添加空值检查，防止从后台恢复时数据包含 null 元素
+                if (mDatas == null || position > mDatas.size() - 1 || position < 0) {
                     continue;//越界
+                }
+                ISuspensionInterface currentItem = mDatas.get(position);
+                if (currentItem == null || !currentItem.isShowSuspension()) {
+                    continue;
                 }
                 //我记得Rv的item position在重置时可能为-1.保险点判断一下吧
                 if (position == 0) {//等于0肯定要有title的
                     drawTitleArea(c, left, right, child, params, position);
 
                 } else {//其他的通过判断
-                    if (null != mDatas.get(position).getSuspensionTag() && !mDatas.get(position).getSuspensionTag().equals(mDatas.get(position - 1).getSuspensionTag())) {
+                    // 检查当前位置和前一个位置的数据是否为 null
+                    ISuspensionInterface prevItem = position > 0 ? mDatas.get(position - 1) : null;
+                    String currentTag = currentItem.getSuspensionTag();
+                    String prevTag = prevItem != null ? prevItem.getSuspensionTag() : null;
+                    if (currentTag != null && !currentTag.equals(prevTag)) {
                         //不为空 且跟前一个tag不一样了，说明是新的分类，也要title
                         drawTitleArea(c, left, right, child, params, position);
                     } else {
@@ -128,6 +137,19 @@ public class SuspensionDecoration extends RecyclerView.ItemDecoration {
      * @param position
      */
     private void drawTitleArea(Canvas c, int left, int right, View child, RecyclerView.LayoutParams params, int position) {//最先调用，绘制在最下层
+        // 添加空值检查
+        if (mDatas == null || position >= mDatas.size() || position < 0) {
+            return;
+        }
+        ISuspensionInterface item = mDatas.get(position);
+        if (item == null) {
+            return;
+        }
+        String tag = item.getSuspensionTag();
+        if (tag == null) {
+            return;
+        }
+
         mPaint.setColor(COLOR_TITLE_BG);
         c.drawRect(left, child.getTop() - params.topMargin - mTitleHeight, right, child.getTop() - params.topMargin + 20, mPaint);
         mPaint.setColor(COLOR_TITLE_FONT);
@@ -135,8 +157,8 @@ public class SuspensionDecoration extends RecyclerView.ItemDecoration {
         Paint.FontMetricsInt fontMetrics = mPaint.getFontMetricsInt();
         int baseline = (getMeasuredHeight() - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top;*/
 
-        mPaint.getTextBounds(mDatas.get(position).getSuspensionTag(), 0, mDatas.get(position).getSuspensionTag().length(), mBounds);
-        c.drawText(mDatas.get(position).getSuspensionTag(), child.getPaddingLeft()+30, child.getTop() - params.topMargin - (mTitleHeight / 2 - mBounds.height() / 2), mPaint);//静止状态下绘制title
+        mPaint.getTextBounds(tag, 0, tag.length(), mBounds);
+        c.drawText(tag, child.getPaddingLeft()+30, child.getTop() - params.topMargin - (mTitleHeight / 2 - mBounds.height() / 2), mPaint);//静止状态下绘制title
     }
 
     @Override
@@ -144,17 +166,32 @@ public class SuspensionDecoration extends RecyclerView.ItemDecoration {
         int pos = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
         pos -= getHeaderViewCount();
         //pos为1，size为1，1>0? true
-        if (mDatas == null || mDatas.isEmpty() || pos > mDatas.size() - 1 || pos < 0 || !mDatas.get(pos).isShowSuspension()) {
+        if (mDatas == null || mDatas.isEmpty() || pos > mDatas.size() - 1 || pos < 0) {
             return;//越界
         }
 
-        String tag = mDatas.get(pos).getSuspensionTag();
+        // 添加空值检查
+        ISuspensionInterface currentItem = mDatas.get(pos);
+        if (currentItem == null || !currentItem.isShowSuspension()) {
+            return;
+        }
+
+        String tag = currentItem.getSuspensionTag();
+        if (tag == null) {
+            return;
+        }
         //View child = parent.getChildAt(pos);
         View child = parent.findViewHolderForLayoutPosition(pos + getHeaderViewCount()).itemView;//出现一个奇怪的bug，有时候child为空，所以将 child = parent.getChildAt(i)。-》 parent.findViewHolderForLayoutPosition(pos).itemView
+        if (child == null) {
+            return;
+        }
 
         boolean flag = false;//定义一个flag，Canvas是否位移过的标志
         if ((pos + 1) < mDatas.size()) {//防止数组越界（一般情况不会出现）
-            if (null != tag && !tag.equals(mDatas.get(pos + 1).getSuspensionTag())) {//当前第一个可见的Item的tag，不等于其后一个item的tag，说明悬浮的View要切换了
+            // 添加空值检查
+            ISuspensionInterface nextItem = mDatas.get(pos + 1);
+            String nextTag = nextItem != null ? nextItem.getSuspensionTag() : null;
+            if (nextTag != null && !tag.equals(nextTag)) {//当前第一个可见的Item的tag，不等于其后一个item的tag，说明悬浮的View要切换了
                 Log.d("zxt", "onDrawOver() called with: c = [" + child.getTop());//当getTop开始变负，它的绝对值，是第一个可见的Item移出屏幕的距离，
                 if (child.getHeight() + child.getTop() < mTitleHeight) {//当第一个可见的item在屏幕中还剩的高度小于title区域的高度时，我们也该开始做悬浮Title的“交换动画”
                     c.save();//每次绘制前 保存当前Canvas状态，
@@ -195,17 +232,23 @@ public class SuspensionDecoration extends RecyclerView.ItemDecoration {
         //我记得Rv的item position在重置时可能为-1.保险点判断一下吧
         if (position > -1) {
             ISuspensionInterface titleCategoryInterface = mDatas.get(position);
+            // 添加空值检查，防止从后台恢复时数据包含 null 元素
+            if (titleCategoryInterface == null || !titleCategoryInterface.isShowSuspension()) {
+                return;
+            }
             //等于0肯定要有title的,
             // 2016 11 07 add 考虑到headerView 等于0 也不应该有title
             // 2016 11 10 add 通过接口里的isShowSuspension() 方法，先过滤掉不想显示悬停的item
-            if (titleCategoryInterface.isShowSuspension()) {
-                if (position == 0) {
+            if (position == 0) {
+                outRect.set(0, mTitleHeight, 0, 0);
+            } else {//其他的通过判断
+                // 检查当前位置和前一个位置的数据是否为 null
+                ISuspensionInterface prevItem = position > 0 ? mDatas.get(position - 1) : null;
+                String currentTag = titleCategoryInterface.getSuspensionTag();
+                String prevTag = prevItem != null ? prevItem.getSuspensionTag() : null;
+                if (currentTag != null && !currentTag.equals(prevTag)) {
+                    //不为空 且跟前一个tag不一样了，说明是新的分类，也要title
                     outRect.set(0, mTitleHeight, 0, 0);
-                } else {//其他的通过判断
-                    if (null != titleCategoryInterface.getSuspensionTag() && !titleCategoryInterface.getSuspensionTag().equals(mDatas.get(position - 1).getSuspensionTag())) {
-                        //不为空 且跟前一个tag不一样了，说明是新的分类，也要title
-                        outRect.set(0, mTitleHeight, 0, 0);
-                    }
                 }
             }
         }

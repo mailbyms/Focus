@@ -262,7 +262,9 @@ public class UserFeedUpdateContentFragment extends Fragment {
                                                                 @Override
                                                                 public void run() {
                                                                     eList.clear();
-                                                                    eList.addAll(feedItems);
+                                                                    // 清理数据，防止 null 元素导致崩溃
+                                                                    List<FeedItem> cleanedItems = cleanNullItems(feedItems);
+                                                                    eList.addAll(cleanedItems);
                                                                     // 同步更新 ID 到位置的映射
                                                                     idToPositionMap.clear();
                                                                     for (int i = 0; i < feedItems.size(); i++) {
@@ -311,7 +313,9 @@ public class UserFeedUpdateContentFragment extends Fragment {
                             public void run() {
                                 //子线程
                                 eList.clear();
-                                eList.addAll(feedList);
+                                // 清理数据，防止 null 元素导致崩溃
+                                List<FeedItem> cleanedItems = cleanNullItems(feedList);
+                                eList.addAll(cleanedItems);
                                 // 同步更新 ID 到位置的映射
                                 idToPositionMap.clear();
                                 for (int i = 0; i < feedList.size(); i++) {
@@ -588,5 +592,23 @@ public class UserFeedUpdateContentFragment extends Fragment {
         if (binding.refreshLayout != null) {
             binding.refreshLayout.autoRefresh();
         }
+    }
+
+    /**
+     * 清理列表中的 null 元素，防止从后台恢复时出现空指针异常
+     * @param list 原始列表
+     * @return 清理后的列表，不包含 null 元素
+     */
+    private List<FeedItem> cleanNullItems(List<FeedItem> list) {
+        if (list == null || list.isEmpty()) {
+            return list;
+        }
+        List<FeedItem> cleanedList = new ArrayList<>();
+        for (FeedItem item : list) {
+            if (item != null) {
+                cleanedList.add(item);
+            }
+        }
+        return cleanedList;
     }
 }
